@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cây Gia Phả - UL/LI Structure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/caygiapha.css">
+</head>
+<body>
+    <div class="khung-trang">
+    <div class="thanh-ben" id="thanhBen">
+        <div>
+            <h2>Gia Phả Đại Việt</h2>
+            <button class="nut-hamburger" onclick="toggleMenuDiDong()" aria-label="Mở/đóng menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav id="menuDieuHuong">
+                <ul>
+                    <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                    <li class="co-menu-con">
+                        <span onclick="toggleMenuCon('menuConPhaHe')" role="button" aria-expanded="false">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                        <ul class="menu-con" id="menuConPhaHe">
+                            <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                            <li><a href="caygiapha.html">Cây gia phả</a></li>
+                        </ul>
+                    </li>
+                    <li class="co-menu-con">
+                        <span onclick="toggleMenuCon('menuConPhaKy')" role="button" aria-expanded="false">Phả ký <span class="mui-ten">&#9662;</span></span>
+                        <ul class="menu-con" id="menuConPhaKy">
+                            <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                            <li><a href="lichsu.html">Lịch sử</a></li>
+                            <li><a href="totien.html">Tổ tiên</a></li>
+                            <li><a href="truyenthong.html">Truyền thống</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="congduc.html">Công đức</a></li>
+                    <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                    <li><a href="hinhanh.html">Hình ảnh</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()">
+            <div class="hop-nguoi-dung">
+                <img src="https://via.placeholder.com/40" alt="avatar" class="anh-avatar">
+                <div class="thong-tin">
+                    <strong>user</strong>
+                </div>
+            </div>
+            <div class="menu-tha-xuong" id="userDropdown">
+                <p onclick="logout()">Đăng xuất</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="banner-tieu-de-trang">
+            <h1>Cây Gia Phả</h1>
+        </div>
+
+        <svg id="familyTreeSVG" class="tree-lines"></svg>
+
+            <div class="tree">
+                <ul>
+                    <li>
+                        <div class="family-unit" id="unit-root">
+                            <div class="parents">
+                                <div class="person" id="person-tran-a">Ông Trần Văn A</div>
+                                <div class="person" id="person-nguyen-b">Bà Nguyễn Thị B</div>
+                            </div>
+                            <ul class="children">
+                                <li>
+                                    <div class="family-unit" id="unit-c-d">
+                                        <div class="parents">
+                                            <div class="person" id="person-tran-c">Trần Văn C</div>
+                                            <div class="person" id="person-le-d">Lê Thị D</div>
+                                        </div>
+                                        <ul class="children">
+                                            <li>
+                                                <div class="family-unit" id="unit-e">
+                                                    <div class="person" id="person-tran-e">Trần Văn E</div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="family-unit" id="unit-f">
+                                                    <div class="person" id="person-tran-f">Trần Thị F</div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="family-unit" id="unit-g-h">
+                                        <div class="parents">
+                                            <div class="person" id="person-tran-g">Trần Thị G</div>
+                                            <div class="person" id="person-pham-h">Phạm Văn H</div>
+                                        </div>
+                                        <ul class="children">
+                                            <li>
+                                                <div class="family-unit" id="unit-i">
+                                                    <div class="person" id="person-pham-i">Phạm Thị I</div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="family-unit" id="unit-k">
+                                        <div class="person" id="person-tran-k">Trần Văn K</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const svg = document.getElementById('familyTreeSVG');
+    const mainContent = document.querySelector('.main-content');
+    const treeContainer = document.querySelector('.tree');
+
+    if (!svg || !mainContent || !treeContainer) {
+        console.error("Không tìm thấy các phần tử HTML cần thiết: SVG, main-content hoặc tree.");
+        return; // Dừng nếu không tìm thấy
+    }
+
+    function resizeSVG() {
+        // Đặt kích thước SVG bằng kích thước của main-content
+        // Đây là bước quan trọng để SVG có vùng vẽ
+        svg.setAttribute('width', mainContent.offsetWidth);
+        svg.setAttribute('height', mainContent.offsetHeight);
+        //console.log(`SVG resized to: ${mainContent.offsetWidth}x${mainContent.offsetHeight}`);
+    }
+
+    // Hàm vẽ đường
+    function drawPath(x1, y1, x2, y2, color = '#a0a0a0', strokeWidth = 2, dasharray = null) {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const d = `M ${x1} ${y1} L ${x2} ${y2}`;
+        path.setAttribute('d', d);
+        path.setAttribute('stroke', color);
+        path.setAttribute('stroke-width', strokeWidth);
+        path.setAttribute('fill', 'none');
+        if (dasharray) {
+            path.setAttribute('stroke-dasharray', dasharray);
+        }
+        svg.appendChild(path);
+        //console.log(`Drew line: M ${x1} ${y1} L ${x2} ${y2}`);
+    }
+
+    // Hàm để lấy tọa độ trung tâm của một phần tử
+    function getCenter(element) {
+        if (!element) return { x: 0, y: 0 };
+        const rect = element.getBoundingClientRect();
+        // Lấy tọa độ tương đối với viewport
+        const viewportX = rect.left + rect.width / 2;
+        const viewportY = rect.top + rect.height / 2;
+
+        // Chuyển đổi tọa độ viewport sang tọa độ của SVG container
+        // Bằng cách trừ đi tọa độ của SVG container (main-content) và thêm scroll
+        const svgRect = svg.getBoundingClientRect();
+        const centerX = viewportX - svgRect.left + mainContent.scrollLeft;
+        const centerY = viewportY - svgRect.top + mainContent.scrollTop;
+        
+        // console.log(`Element: ${element.id || element.className}, Rect: ${JSON.stringify(rect)}, Center: (${centerX}, ${centerY})`);
+        return { x: centerX, y: centerY };
+    }
+
+    // Hàm để lấy tọa độ điểm giữa phía dưới của một phần tử
+    function getBottomCenter(element) {
+        if (!element) return { x: 0, y: 0 };
+        const rect = element.getBoundingClientRect();
+        const viewportX = rect.left + rect.width / 2;
+        const viewportY = rect.bottom; // Lấy điểm dưới cùng
+        
+        const svgRect = svg.getBoundingClientRect();
+        const centerX = viewportX - svgRect.left + mainContent.scrollLeft;
+        const bottomY = viewportY - svgRect.top + mainContent.scrollTop;
+        return { x: centerX, y: bottomY };
+    }
+
+    // Hàm để lấy tọa độ điểm giữa phía trên của một phần tử
+    function getTopCenter(element) {
+        if (!element) return { x: 0, y: 0 };
+        const rect = element.getBoundingClientRect();
+        const viewportX = rect.left + rect.width / 2;
+        const viewportY = rect.top; // Lấy điểm trên cùng
+        
+        const svgRect = svg.getBoundingClientRect();
+        const centerX = viewportX - svgRect.left + mainContent.scrollLeft;
+        const topY = viewportY - svgRect.top + mainContent.scrollTop;
+        return { x: centerX, y: topY };
+    }
+
+    function drawAllFamilyLines() {
+        svg.innerHTML = ''; // Xóa tất cả các đường cũ
+
+        // Lấy khoảng cách dọc giữa các thế hệ từ CSS (nếu có định nghĩa)
+        const rootStyle = getComputedStyle(document.documentElement);
+        const spacingV = parseFloat(rootStyle.getPropertyValue('--spacing-v')) || 60; // Default to 60px if not found
+
+        // --- Nối cha mẹ với nhau (đường ngang) ---
+        // --- Nối cha mẹ với nhau (đường ngang) ---
+        document.querySelectorAll('.family-unit .parents').forEach(parentsDiv => {
+            const persons = parentsDiv.querySelectorAll('.person');
+            if (persons.length === 2) {
+                const person1 = persons[0];
+                const person2 = persons[1];
+
+                const rect1 = person1.getBoundingClientRect();
+                const rect2 = person2.getBoundingClientRect();
+
+                const svgRect = svg.getBoundingClientRect();
+
+                // Điểm giữa cạnh phải của người 1
+                const p1_x = rect1.right - svgRect.left + mainContent.scrollLeft;
+                const p1_y = rect1.top + rect1.height / 2 - svgRect.top + mainContent.scrollTop;
+
+                // Điểm giữa cạnh trái của người 2
+                const p2_x = rect2.left - svgRect.left + mainContent.scrollLeft;
+                const p2_y = rect2.top + rect2.height / 2 - svgRect.top + mainContent.scrollTop;
+
+                drawPath(p1_x, p1_y, p2_x, p2_y, '#FF69B4'); // Màu hồng cho đường hôn phối
+            }
+        });
+// --- Nối từ cha mẹ (family-unit) xuống con cái (ul.children) ---
+        document.querySelectorAll('.family-unit').forEach(parentUnit => {
+            const parentsDiv = parentUnit.querySelector('.parents');
+            const childrenList = parentUnit.querySelector('.children');
+
+            if (parentsDiv && childrenList && childrenList.children.length > 0) {
+                let connectionPointX;
+                let connectionPointY;
+
+                const personsInParents = parentsDiv.querySelectorAll('.person');
+
+                if (personsInParents.length === 2) {
+                    const rect1 = personsInParents[0].getBoundingClientRect();
+                    const rect2 = personsInParents[1].getBoundingClientRect();
+                    const svgRect = svg.getBoundingClientRect();
+
+                    const p1_x_on_line = rect1.right - svgRect.left + mainContent.scrollLeft;
+                    const p1_y_on_line = rect1.top + rect1.height / 2 - svgRect.top + mainContent.scrollTop;
+
+                    const p2_x_on_line = rect2.left - svgRect.left + mainContent.scrollLeft;
+
+                    connectionPointX = (p1_x_on_line + p2_x_on_line) / 2;
+                    connectionPointY = p1_y_on_line;
+                } else if (personsInParents.length === 1) {
+                    const singlePerson = personsInParents[0];
+                    const singlePersonBottomCenter = getBottomCenter(singlePerson);
+                    connectionPointX = singlePersonBottomCenter.x;
+                    connectionPointY = singlePersonBottomCenter.y;
+                } else {
+                    return; // Không có cha mẹ hoặc logic không xác định
+                }
+                
+                const childrenPaddingTop = parseFloat(getComputedStyle(childrenList).paddingTop);
+                const childrenTopY = getTopCenter(childrenList).y;
+                let horizontalLineY = childrenTopY - childrenPaddingTop / 2;
+                
+                // Bước 1: Đường dọc từ điểm kết nối của cha mẹ xuống đường ngang của con
+                drawPath(connectionPointX, connectionPointY, connectionPointX, horizontalLineY);
+
+                // --- Xử lý cho con cái ---
+                const childrenElements = Array.from(childrenList.children);
+
+                if (childrenElements.length === 1) {
+                    // Nếu chỉ có MỘT con
+                    const childLi = childrenElements[0];
+                    const childUnit = childLi.querySelector('.family-unit') || childLi.querySelector('.person');
+                    if (childUnit) {
+                        const childTopCenter = getTopCenter(childUnit);
+                        
+                        // Đảm bảo đường ngang chỉ là một điểm tại vị trí X của con
+                        // hoặc vẽ một đường ngang rất ngắn tại X của con
+                        // Trong trường hợp này, đường ngang trùng với đường dọc xuống con
+                        // -> chỉ cần đảm bảo đường dọc từ connectionPointX xuống đúng childTopCenter.y
+                        
+                        // Đặt lại horizontalLineY để nó bằng y của đỉnh con để đường nối là thẳng đứng
+                        horizontalLineY = childTopCenter.y; 
+
+                        // Bước 2: Đường dọc từ horizontalLineY (tức childTopCenter.y) xuống con
+                        drawPath(connectionPointX, connectionPointY, connectionPointX, childTopCenter.y); // Vẽ lại đường dọc chính xác
+                        // Và không vẽ đường ngang nữa vì nó không cần thiết hoặc trùng lặp
+                    }
+                } else {
+                    // Nếu có NHIỀU con (logic ban đầu)
+                    // Bước 2: Đường ngang nối các con
+                    const firstChildLi = childrenList.querySelector(':scope > li:first-child');
+                    const lastChildLi = childrenList.querySelector(':scope > li:last-child');
+                    
+                    if (firstChildLi && lastChildLi) {
+                        const firstChildCenter = getCenter(firstChildLi.querySelector('.family-unit') || firstChildLi.querySelector('.person'));
+                        const lastChildCenter = getCenter(lastChildLi.querySelector('.family-unit') || lastChildLi.querySelector('.person'));
+
+                        drawPath(firstChildCenter.x, horizontalLineY, lastChildCenter.x, horizontalLineY);
+                    }
+
+                    // Bước 3: Các đường dọc từ đường ngang xuống từng con
+                    childrenElements.forEach(childLi => {
+                        const childUnit = childLi.querySelector('.family-unit') || childLi.querySelector('.person');
+                        if (childUnit) {
+                            const childTopCenter = getTopCenter(childUnit);
+                            drawPath(childTopCenter.x, horizontalLineY, childTopCenter.x, childTopCenter.y);
+                        }
+                    });
+                }
+
+            } else if (parentUnit.classList.contains('family-unit') && !parentsDiv && childrenList && childrenList.children.length > 0) {
+                // ... (phần xử lý người độc thân có con, giữ nguyên logic này) ...
+                const singlePerson = parentUnit.querySelector('.person');
+                if (singlePerson) {
+                    const singlePersonBottomCenter = getBottomCenter(singlePerson);
+                    const childrenPaddingTop = parseFloat(getComputedStyle(childrenList).paddingTop);
+                    const childrenTopY = getTopCenter(childrenList).y;
+                    const horizontalLineY = childrenTopY - childrenPaddingTop / 2;
+
+                    drawPath(singlePersonBottomCenter.x, singlePersonBottomCenter.y, singlePersonBottomCenter.x, horizontalLineY);
+
+                    const firstChildLi = childrenList.querySelector(':scope > li:first-child');
+                    const lastChildLi = childrenList.querySelector(':scope > li:last-child');
+                    
+                    if (firstChildLi && lastChildLi) {
+                        const firstChildCenter = getCenter(firstChildLi.querySelector('.family-unit') || firstChildLi.querySelector('.person'));
+                        const lastChildCenter = getCenter(lastChildLi.querySelector('.family-unit') || lastChildLi.querySelector('.person'));
+                        drawPath(firstChildCenter.x, horizontalLineY, lastChildCenter.x, horizontalLineY);
+                    }
+
+                    Array.from(childrenList.children).forEach(childLi => {
+                        const childUnit = childLi.querySelector('.family-unit') || childLi.querySelector('.person');
+                        if (childUnit) {
+                            const childTopCenter = getTopCenter(childUnit);
+                            drawPath(childTopCenter.x, horizontalLineY, childTopCenter.x, childTopCenter.y);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    // --- Xử lý sự kiện ---
+
+    // Chạy lần đầu khi tải trang
+    resizeSVG();
+    drawAllFamilyLines();
+
+    // Cập nhật đường nối khi cửa sổ thay đổi kích thước
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            resizeSVG();
+            drawAllFamilyLines();
+        }, 200); // Debounce để không chạy quá thường xuyên
+    });
+
+    // Cập nhật đường nối khi cuộn khu vực main-content
+    mainContent.addEventListener('scroll', () => {
+        // Chỉ cần vẽ lại đường, kích thước SVG không đổi khi cuộn
+        drawAllFamilyLines();
+    });
+
+    // Thêm chức năng cho sidebar (giữ nguyên từ code trước)
+    const navLinks = document.querySelectorAll('.sidebar-nav a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            navLinks.forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+            const sectionName = this.textContent;
+            const mainHeaderTitle = document.querySelector('.main-header h1');
+            if (mainHeaderTitle) {
+                mainHeaderTitle.textContent = sectionName === 'Trang cá nhân' ? 'Trang cá nhân' : sectionName;
+                if (sectionName === 'Phả hệ') {
+                    mainHeaderTitle.textContent = 'Cây gia phả';
+                }
+            }
+        });
+    });
+});
+function drawLines() {
+    const svg = document.getElementById("connection-lines");
+    if (!svg) {
+        console.error("Không tìm thấy SVG!");
+        return;
+    }
+
+    svg.innerHTML = ""; // Xóa các đường cũ
+
+    const connections = [
+        ["ong-tran-van-a", "tran-van-c"],
+        ["ong-tran-van-a", "tran-thi-g"],
+        ["ong-tran-van-a", "tran-van-k"],
+        ["tran-van-c", "tran-van-e"],
+        ["tran-van-c", "tran-thi-f"],
+        ["tran-thi-g", "pham-thi-i"],
+    ];
+
+    connections.forEach(([fromId, toId]) => {
+        const from = document.getElementById(fromId);
+        const to = document.getElementById(toId);
+        if (from && to) {
+            const fromRect = from.getBoundingClientRect();
+            const toRect = to.getBoundingClientRect();
+
+            const svgRect = svg.getBoundingClientRect();
+
+            const x1 = fromRect.left + fromRect.width / 2 - svgRect.left;
+            const y1 = fromRect.bottom - svgRect.top;
+            const x2 = toRect.left + toRect.width / 2 - svgRect.left;
+            const y2 = toRect.top - svgRect.top;
+
+            drawPath(x1, y1, x2, y2);
+        }
+    });
+}
+    </script>
+</body>
+</html>

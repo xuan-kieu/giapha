@@ -1,523 +1,381 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard - Gia Phả Đại Việt</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { height: 100%; font-family: Arial, sans-serif; }
-    body { display: flex; height: 100vh; }
-
-    .sidebar {
-      width: 220px;
-      background-color: #DDAA00;
-      color: white;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .sidebar h2 { font-size: 24px; margin-bottom: 20px; }
-    .sidebar ul { list-style: none; padding: 0; }
-    .sidebar ul li { margin: 12px 0; cursor: pointer; }
-    .sidebar a { color: white; text-decoration: none; }
-    .sidebar a:hover { text-decoration: underline; }
-
-    .user-area { margin-top: 40px; position: relative; cursor: pointer; }
-    .user-box { display: flex; align-items: center; gap: 10px; }
-    .user-box img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .user-box .info { display: flex; flex-direction: column; }
-    .user-box .info strong {
-      font-size: 14px;
-      line-height: 1.2;
-    }
-
-    .dropdown {
-      position: absolute;
-      bottom: 60px;
-      left: 0;
-      background: #fff;
-      color: black;
-      padding: 10px;
-      border-radius: 10px;
-      display: none;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 10;
-      width: 180px;
-    }
-    .dropdown p { margin: 0; padding: 8px; cursor: pointer; }
-    .dropdown p:hover { background: #eee; }
-
-    .main {
-      flex: 1;
-      background-color: #FAF0C0;
-      padding: 50px;
-    }
-
-    .profile {
-      max-width: 500px;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .profile input, .profile button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 6px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-    }
-
-    .profile button {
-      background-color: #C26A00;
-      color: white;
-      border: none;
-      border-radius: 999px;
-      margin-top: 10px;
-    }
-    .profile button:hover { background-color: #a45700; }
-
-    .error {
-      color: red;
-      font-size: 14px;
-      margin-top: 8px;
-      display: none;
-    }
-
-    .avatar-wrapper {
-      position: relative;
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 20px;
-      cursor: pointer;
-    }
-
-    .avatar-img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #ccc;
-    }
-
-    .avatar-icon {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      background-color: #fff;
-      color: #C26A00;
-      border-radius: 50%;
-      padding: 6px;
-      font-size: 14px;
-      box-shadow: 0 0 4px rgba(0,0,0,0.2);
-    }
-
-    .submenu { display: none; padding-left: 20px; list-style: none; }
-    .submenu li { margin: 8px 0; }
-    .submenu a { color: white !important; text-decoration: none; }
-    .submenu a:hover { text-decoration: underline; }
-    .has-submenu .arrow { font-size: 12px; margin-left: 5px; }
-
-    .toast {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #333;
-      color: #fff;
-      padding: 16px 24px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 1000;
-      font-size: 16px;
-    }
-
-
-
-    .main {
-  flex: 1;
-  background-color: #FAF0C0;
-  padding: 50px;
-  overflow-x: auto;
-}
-
-.main h1 {
-  color: #7A4F0F;
-  margin-bottom: 20px;
-}
-
-.add-btn {
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #C26A00;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.search-bar {
-  display: flex;
-  margin-bottom: 20px;
-  gap: 10px;
-}
-
-.search-bar input {
-  padding: 10px;
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-}
-
-.search-bar button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #C26A00;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-#noResult {
-  color: red;
-  font-weight: bold;
-  display: none;
-  margin-bottom: 10px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 12px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
-
-th {
-  background-color: #FFD966;
-}
-
-.actions i {
-  margin: 0 5px;
-  cursor: pointer;
-}
-
-.popup {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup-content {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  width: 400px;
-  position: relative;
-}
-
-.popup-content input,
-.popup-content select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.popup-content button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  border: none;
-  background-color: #C26A00;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.popup-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #333;
-}
-
-  </style>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hình ảnh - Gia Phả Đại Việt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/chung.css" /> </head>
 <body>
-  <div class="sidebar">
-    <div>
-            <h2>Gia Phả Đại Việt</h2>
-      <ul>
-        <li><a href="dashboard.html">Trang cá nhân</a></li>
-        <li class="has-submenu">
-          <span onclick="toggleSubmenu()">Phả hệ <span class="arrow">&#9662;</span></span>
-          <ul class="submenu" id="familySubmenu">
-            <li><a href="manage-members.html">Quản lý thành viên</a></li>
-            <li><a href="family-tree.html">Cây gia phả</a></li>
-          </ul>
-        </li>
-
-        <li class="has-submenu">
-  <span onclick="toggleSubmenuKy()">Phả ký <span class="arrow">&#9662;</span></span>
-  <ul class="submenu" id="kySubmenu">
-    <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
-    <li><a href="lichsu.html">Lịch sử</a></li>
-    <li><a href="totien.html">Tổ tiên</a></li>
-    <li><a href="truyenthong.html">Truyền thống</a></li>
-  </ul>
-</li>
-        <li><a href="cong-duc.html">Công đức</a></li>
-        <li><a href="ngoai-pha.html">Ngoại phả</a></li>
-        <li><a href="hinhanh.html">Hình ảnh</a></li>
-      </ul>
-    </div>
-    <div class="user-area" onclick="toggleDropdown()">
-      <div class="user-box">
-        <img src="assets/bg.jpg" alt="avatar">
-        <div class="info">
-          <strong>user</strong>
+    <div class="khung-trang">
+        <div class="thanh-ben">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <button class="nut-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <nav> <ul>
+                        <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('familySubmenu')">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="familySubmenu">
+                                <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                                <li><a href="caygiapha.html">Cây gia phả</a></li>
+                            </ul>
+                        </li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaKy')" role="button" aria-expanded="false">Phả ký <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaKy">
+                                <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                                <li><a href="lichsu.html">Lịch sử</a></li>
+                                <li><a href="totien.html">Tổ tiên</a></li>
+                                <li><a href="truyenthong.html">Truyền thống</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="congduc.html">Công đức</a></li>
+                        <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                        <li><a href="hinhanh.html">Hình ảnh</a></li>
+                </nav>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="avatar">
+                    <div class="thong-tin">
+                        <strong>user</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="dropdown" id="userDropdown">
-        <p onclick="logout()">Đăng xuất</p>
-      </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Quản lý hình ảnh</h1>
+            </div>
+
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="showPopup('add')">
+                    <i class="fas fa-plus"></i> Thêm hình ảnh
+                </button>
+
+                <div class="khung-tim-kiem">
+                    <input type="text" id="searchInput" class="input-tim-kiem" placeholder="Nhập tên ảnh hoặc chú thích">
+                    <button class="nut-tim-kiem" onclick="searchImage()">Tìm kiếm</button>
+                </div>
+            </div>
+
+            <div class="thong-bao-loi" id="noResult">Không tìm thấy kết quả</div>
+
+            <div class="khung-bang">
+                <table class="bang-chung">
+                    <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Chú thích</th>
+                            <th>Phân loại</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="imageTable">
+                        <tr data-id="sample1">
+                            <td><img src="https://via.placeholder.com/100" alt="Ảnh mẫu"></td>
+                            <td data-label="Chú thích">Nhà thờ tổ - ngày giỗ</td>
+                            <td data-label="Phân loại">Di tích</td>
+                            <td class="cot-thao-tac">
+                                <button class="nut-thao-tac nut-sua" onclick="showPopup('update', 'sample1')"><i class="fa-solid fa-pen"></i></button>
+                                <button class="nut-thao-tac nut-xoa" onclick="showDeleteConfirm('sample1')"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 
+    <div class="modal" id="popup">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closePopup()">&times;</button>
+            <h2 id="popupTitle">Thêm hình ảnh</h2>
+            <input type="file" accept="image/*" class="input-truong">
+            <input type="text" class="input-truong" placeholder="Chú thích ảnh">
+            <select class="input-truong">
+                <option value="Thành viên">Thành viên</option>
+                <option value="Sự kiện gia đình">Sự kiện gia đình</option>
+                <option value="Di tích">Di tích</option>
+            </select>
+            <button class="nut-bam" onclick="confirmAddOrUpdate()">Xác nhận</button>
+        </div>
+    </div>
 
+    <div class="modal" id="popupDelete">
+        <div class="modal-noi-dung modal-confirm">
+            <h2>Xác nhận xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa hình ảnh này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-bam nut-xoa-confirm" onclick="confirmDelete()">Xóa</button>
+                <button class="nut-bam nut-huy-confirm" onclick="closeDeletePopup()">Hủy</button>
+            </div>
+        </div>
+    </div>
 
-  <div class="main">
-  <h1>Quản lý hình ảnh</h1>
-  <button class="add-btn" onclick="showPopup()">+ Thêm hình ảnh</button>
+    <div class="thong-bao-nho" id="toastNotification">
+        <i class="fas fa-check-circle"></i>
+        <span>Thông báo thành công!</span>
+    </div>
 
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Nhập tên ảnh hoặc chú thích">
-    <button onclick="searchImage()">Tìm kiếm</button>
-  </div>
-
-  <div id="noResult">Không tìm thấy kết quả</div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Hình ảnh</th>
-        <th>Chú thích</th>
-        <th>Phân loại</th>
-        <th>Thao tác</th>
-      </tr>
-    </thead>
-    <tbody id="imageTable">
-      <tr>
-        <td><img src="https://via.placeholder.com/100" alt="Ảnh mẫu" style="width: 100px; height: auto;"></td>
-        <td>Nhà thờ tổ - ngày giỗ</td>
-        <td>Di tích</td>
-        <td class="actions">
-          <i class="fa-solid fa-pen" onclick="showPopup('update')"></i>
-          <i class="fa-solid fa-trash" onclick="showDeleteConfirm()"></i>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <button class="popup-close" onclick="closePopup()">&times;</button>
-    <h3 id="popupTitle">Thêm hình ảnh</h3>
-    <input type="file" accept="image/*">
-    <input type="text" placeholder="Chú thích ảnh">
-    <select>
-      <option>Thành viên</option>
-      <option>Sự kiện gia đình</option>
-      <option>Di tích</option>
-    </select>
-    <button onclick="confirmAddOrUpdate()">Xác nhận</button>
-  </div>
-</div>
-
-
-<div class="popup" id="popupDelete">
-  <div class="popup-content">
-    <h3>Bạn có chắc muốn xóa hình ảnh này không?</h3>
-    <button onclick="confirmDelete()">Xóa</button>
-    <button onclick="closeDeletePopup()">Hủy</button>
-  </div>
-</div>
-
-  </body>
     <script>
-// ==== Cài đặt MockAPI endpoint ====
-const API_URL = 'https://682ed083746f8ca4a47e6bb5.mockapi.io/user'; // Thay URL này bằng URL thật
+        // ==== Cài đặt MockAPI endpoint ====
+        const API_URL = 'https://682ed083746f8ca4a47e6bb5.mockapi.io/user'; // Thay URL này bằng URL thật
 
-let currentImageId = null;
+        let currentImageId = null;
 
-// ==== Lấy danh sách hình ảnh ====
-async function fetchImages() {
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    renderImages(data);
-  } catch (err) {
-    alert('Lỗi khi tải dữ liệu!');
-  }
-}
+        // ==== Chức năng Sidebar và Dropdown ====
+        function toggleSubmenu(id) {
+            const submenu = document.getElementById(id);
+            const parentLi = submenu.closest('li');
+            const arrow = parentLi.querySelector('.mui-ten');
 
-// ==== Render hình ảnh ====
-function renderImages(list) {
-  const table = document.getElementById('imageTable');
-  const noResult = document.getElementById('noResult');
-  table.innerHTML = '';
-  if (!list.length) {
-    noResult.style.display = 'block';
-    return;
-  }
-  noResult.style.display = 'none';
+            if (submenu.classList.contains('hien-thi')) {
+                submenu.classList.remove('hien-thi');
+                arrow.style.transform = 'rotate(0deg)';
+                parentLi.querySelector('span').setAttribute('aria-expanded', 'false');
+            } else {
+                // Đóng tất cả submenu khác trước khi mở cái mới
+                document.querySelectorAll('.menu-con.hien-thi').forEach(openSub => {
+                    openSub.classList.remove('hien-thi');
+                    openSub.closest('li').querySelector('.mui-ten').style.transform = 'rotate(0deg)';
+                    openSub.closest('li').querySelector('span').setAttribute('aria-expanded', 'false');
+                });
+                submenu.classList.add('hien-thi');
+                arrow.style.transform = 'rotate(180deg)';
+                parentLi.querySelector('span').setAttribute('aria-expanded', 'true');
+            }
+        }
 
-  list.forEach(img => {
-    table.innerHTML += `
-      <tr>
-        <td><img src="${img.image_url}" style="width: 100px;"></td>
-        <td>${img.image_caption}</td>
-        <td>${img.image_category}</td>
-        <td class="actions">
-          <i class="fa-solid fa-pen" onclick="showPopup('update', '${img.id}')"></i>
-          <i class="fa-solid fa-trash" onclick="showDeleteConfirm('${img.id}')"></i>
-        </td>
-      </tr>
-    `;
-  });
-}
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hien-thi');
+        }
 
-// ==== Hiển thị popup thêm/sửa ====
-function showPopup(mode = 'add', id = null) {
-  document.getElementById('popup').style.display = 'flex';
-  document.getElementById('popupTitle').innerText = mode === 'add' ? 'Thêm hình ảnh' : 'Chỉnh sửa hình ảnh';
-  currentImageId = null;
+        function logout() {
+            alert('Đăng xuất thành công!');
+            // Chuyển hướng về trang đăng nhập hoặc trang chủ
+            window.location.href = 'login.html'; // Hoặc trang login của bạn
+        }
 
-  const inputs = document.querySelectorAll('#popup input, #popup select');
-  inputs[0].value = ''; // file input (reset)
-  inputs[1].value = '';
-  inputs[2].value = 'Thành viên';
+        // Đóng dropdown khi click bên ngoài
+        document.addEventListener('click', function(event) {
+            const userArea = document.querySelector('.khu-vuc-ngu-dung');
+            const dropdown = document.getElementById('userDropdown');
+            if (!userArea.contains(event.target) && dropdown.classList.contains('hien-thi')) {
+                dropdown.classList.remove('hien-thi');
+            }
+        });
 
-  if (mode === 'update' && id) {
-    fetch(`${API_URL}/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        currentImageId = id;
-        inputs[1].value = data.image_caption;
-        inputs[2].value = data.image_category;
-        inputs[0].dataset.preview = data.image_url;
-      });
-  }
-}
+        // Toggle Sidebar cho mobile
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.thanh-ben');
+            const nav = sidebar.querySelector('nav');
+            sidebar.classList.toggle('menu-mo'); // Class để điều khiển layout khi menu mở
+            nav.classList.toggle('hien-thi'); // Class để hiển thị/ẩn nav
+        }
 
-function closePopup() {
-  document.getElementById('popup').style.display = 'none';
-}
+        // ==== Toast Notification ====
+        function showToast(message, type = 'thanh-cong') {
+            const toast = document.getElementById('toastNotification');
+            const toastMessage = toast.querySelector('span');
+            const toastIcon = toast.querySelector('i');
 
-// ==== Thêm / Cập nhật hình ảnh ====
-async function confirmAddOrUpdate() {
-  const inputs = document.querySelectorAll('#popup input, #popup select');
-  const fileInput = inputs[0];
-  const caption = inputs[1].value.trim();
-  const category = inputs[2].value;
+            toastMessage.textContent = message;
+            toast.className = `thong-bao-nho hien-thi ${type}`; // Reset class và thêm type
 
-  let imageUrl = fileInput.dataset.preview || '';
-  if (fileInput.files.length) {
-    // Upload file ảnh lên 1 dịch vụ thật tế ở đây (giả lập tạm bằng URL cố định)
-    imageUrl = URL.createObjectURL(fileInput.files[0]);
-  }
+            // Đổi icon dựa trên loại thông báo
+            if (type === 'thanh-cong') {
+                toastIcon.className = 'fas fa-check-circle';
+            } else if (type === 'that-bai') {
+                toastIcon.className = 'fas fa-times-circle';
+            }
 
-  const payload = { image_url: imageUrl, image_caption: caption, image_category: category };
+            setTimeout(() => {
+                toast.classList.remove('hien-thi');
+            }, 3000); // Ẩn sau 3 giây
+        }
 
-  try {
-    if (currentImageId) {
-      await fetch(`${API_URL}/${currentImageId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } else {
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    }
-    closePopup();
-    fetchImages();
-  } catch (err) {
-    alert('Lỗi khi lưu dữ liệu!');
-  }
-}
 
-// ==== Tìm kiếm ====
-function searchImage() {
-  const term = document.getElementById('searchInput').value.toLowerCase();
-  fetch(API_URL)
-    .then(res => res.json())
-    .then(data => {
-      const filtered = data.filter(img =>
-        img.image_caption.toLowerCase().includes(term) ||
-        img.image_category.toLowerCase().includes(term)
-      );
-      renderImages(filtered);
-    });
-}
+        // ==== Lấy danh sách hình ảnh ====
+        async function fetchImages() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                renderImages(data);
+            } catch (err) {
+                console.error('Lỗi khi tải dữ liệu:', err);
+                showToast('Lỗi khi tải dữ liệu!', 'that-bai');
+            }
+        }
 
-// ==== Xóa ====
-function showDeleteConfirm(id) {
-  document.getElementById('popupDelete').style.display = 'flex';
-  document.getElementById('popupDelete').dataset.id = id;
-}
+        // ==== Render hình ảnh ====
+        function renderImages(list) {
+            const tableBody = document.getElementById('imageTable');
+            const noResult = document.getElementById('noResult');
+            tableBody.innerHTML = ''; // Đổi từ 'table' thành 'tableBody' để chỉ làm rỗng tbody
 
-function closeDeletePopup() {
-  document.getElementById('popupDelete').style.display = 'none';
-}
+            if (!list || list.length === 0) { // Kiểm tra cả undefined/null và mảng rỗng
+                noResult.style.display = 'block';
+                return;
+            }
+            noResult.style.display = 'none';
 
-async function confirmDelete() {
-  const id = document.getElementById('popupDelete').dataset.id;
-  try {
-    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-    fetchImages();
-    closeDeletePopup();
-  } catch (err) {
-    alert('Lỗi khi xóa hình ảnh!');
-  }
-}
+            list.forEach(img => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', img.id); // Thêm data-id cho hàng
 
-// ==== Khởi tạo ====
-document.addEventListener('DOMContentLoaded', fetchImages);
+                row.innerHTML = `
+                    <td><img src="${img.image_url}" alt="Ảnh ${img.image_caption}" style="width: 100px; height: auto;"></td>
+                    <td data-label="Chú thích">${img.image_caption}</td>
+                    <td data-label="Phân loại">${img.image_category}</td>
+                    <td class="cot-thao-tac">
+                        <button class="nut-thao-tac nut-sua" onclick="showPopup('update', '${img.id}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="nut-thao-tac nut-xoa" onclick="showDeleteConfirm('${img.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
 
+        // ==== Hiển thị popup thêm/sửa ====
+        function showPopup(mode = 'add', id = null) {
+            const popup = document.getElementById('popup');
+            popup.classList.add('hien-thi'); // Dùng class 'hien-thi'
+            document.getElementById('popupTitle').innerText = mode === 'add' ? 'Thêm hình ảnh' : 'Chỉnh sửa hình ảnh';
+            currentImageId = null;
+
+            const fileInput = popup.querySelector('input[type="file"]');
+            const captionInput = popup.querySelector('input[type="text"]');
+            const categorySelect = popup.querySelector('select');
+
+            fileInput.value = ''; // Reset file input
+            captionInput.value = '';
+            categorySelect.value = 'Thành viên'; // Giá trị mặc định
+
+            if (mode === 'update' && id) {
+                fetch(`${API_URL}/${id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        currentImageId = id;
+                        captionInput.value = data.image_caption;
+                        categorySelect.value = data.image_category;
+                        fileInput.dataset.preview = data.image_url; // Lưu URL ảnh cũ để hiển thị hoặc dùng lại
+                    })
+                    .catch(err => {
+                        console.error('Lỗi khi tải dữ liệu chỉnh sửa:', err);
+                        showToast('Lỗi khi tải dữ liệu hình ảnh!', 'that-bai');
+                    });
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('popup').classList.remove('hien-thi'); // Dùng class 'hien-thi'
+        }
+
+        // ==== Thêm / Cập nhật hình ảnh ====
+        async function confirmAddOrUpdate() {
+            const popup = document.getElementById('popup');
+            const fileInput = popup.querySelector('input[type="file"]');
+            const caption = popup.querySelector('input[type="text"]').value.trim();
+            const category = popup.querySelector('select').value;
+
+            if (!caption) {
+                showToast('Chú thích ảnh không được để trống!', 'that-bai');
+                return;
+            }
+
+            let imageUrl = fileInput.dataset.preview || ''; // Mặc định là ảnh cũ nếu không có file mới
+            if (fileInput.files.length > 0) {
+                // **Đây là phần cần tích hợp dịch vụ lưu trữ ảnh thật tế**
+                // Hiện tại, chúng ta đang tạo một URL tạm thời hoặc giả lập
+                imageUrl = URL.createObjectURL(fileInput.files[0]);
+                // Trong môi trường thật, bạn sẽ upload file và nhận về URL thật
+            } else if (!imageUrl && currentImageId) {
+                // Nếu là update mà người dùng xóa file cũ và không chọn file mới, thì sao chép lại ảnh cũ nếu có
+                const oldData = await fetch(`${API_URL}/${currentImageId}`).then(res => res.json());
+                imageUrl = oldData.image_url;
+            } else if (!imageUrl && !currentImageId) { // Add mới mà không có ảnh
+                showToast('Vui lòng chọn hình ảnh!', 'that-bai');
+                return;
+            }
+
+
+            const payload = { image_url: imageUrl, image_caption: caption, image_category: category };
+
+            try {
+                if (currentImageId) {
+                    await fetch(`${API_URL}/${currentImageId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    showToast('Cập nhật hình ảnh thành công!', 'thanh-cong');
+                } else {
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    showToast('Thêm hình ảnh thành công!', 'thanh-cong');
+                }
+                closePopup();
+                fetchImages();
+            } catch (err) {
+                console.error('Lỗi khi lưu dữ liệu:', err);
+                showToast('Lỗi khi lưu dữ liệu hình ảnh!', 'that-bai');
+            }
+        }
+
+        // ==== Tìm kiếm ====
+        function searchImage() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            fetch(API_URL)
+                .then(res => res.json())
+                .then(data => {
+                    const filtered = data.filter(img =>
+                        (img.image_caption && img.image_caption.toLowerCase().includes(term)) ||
+                        (img.image_category && img.image_category.toLowerCase().includes(term))
+                    );
+                    renderImages(filtered);
+                })
+                .catch(err => {
+                    console.error('Lỗi khi tìm kiếm:', err);
+                    showToast('Lỗi khi tìm kiếm hình ảnh!', 'that-bai');
+                });
+        }
+
+        // ==== Xóa ====
+        function showDeleteConfirm(id) {
+            const deletePopup = document.getElementById('popupDelete');
+            deletePopup.classList.add('hien-thi'); // Dùng class 'hien-thi'
+            deletePopup.dataset.id = id;
+        }
+
+        function closeDeletePopup() {
+            document.getElementById('popupDelete').classList.remove('hien-thi'); // Dùng class 'hien-thi'
+        }
+
+        async function confirmDelete() {
+            const id = document.getElementById('popupDelete').dataset.id;
+            try {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                fetchImages();
+                closeDeletePopup();
+                showToast('Xóa hình ảnh thành công!', 'thanh-cong');
+            } catch (err) {
+                console.error('Lỗi khi xóa hình ảnh:', err);
+                showToast('Lỗi khi xóa hình ảnh!', 'that-bai');
+            }
+        }
+
+        // ==== Khởi tạo ====
+        document.addEventListener('DOMContentLoaded', fetchImages);
     </script>
+</body>
 </html>

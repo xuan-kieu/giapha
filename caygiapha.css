@@ -1,0 +1,886 @@
+/* DUAN/css/chung.css - Phiên bản Đã kiểm tra lại kỹ càng & Đồng bộ hóa */
+
+/* --- 1. Thiết lập cơ bản (CSS Reset & Global Styles) --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--mau-chu);
+    overflow: hidden; /* Ngăn cuộn toàn bộ trang - Thêm từ giapha.css */
+}
+
+a {
+    text-decoration: none;
+    color: var(--mau-chinh);
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--mau-chinh-hover);
+}
+
+/* --- 2. Định nghĩa biến CSS (CSS Variables) --- */
+:root {
+    /* Màu sắc */
+    --mau-chinh: #C26A00;
+    --mau-chinh-hover: #a45700;
+    --mau-chinh-dam: #DDAA00; /* Màu vàng đậm của sidebar */
+    --mau-chu: #333;
+    --mau-tieu-de-login: #7A4F0F;
+    --mau-vien: #ccc;
+    --nen-sang: #FAF0C0; /* Màu nền chính của nội dung */
+    --nen-hop-login: white;
+    --nen-hover-nho: #eee;
+    --mau-xanh-sua: #007bff;
+    --mau-xanh-sua-hover: #0056b3;
+    --mau-do-xoa: #dc3545;
+    --mau-do-xoa-hover: #c82333;
+    --mau-xam-huy: #6c757d;
+    --mau-xam-huy-hover: #5a6268;
+    --mau-nen-header-bang: #FFD966; /* Màu vàng nhạt cho header bảng */
+    --mau-nen-hang-le-bang: #f9f9f9; /* Màu nền hàng lẻ */
+    --mau-xanh-la-thong-bao: #28a745;
+    --mau-do-thong-bao: #dc3545;
+
+    /* Biến thêm từ giapha.css cho cây gia phả */
+    --main-bg-giapha: #fff8e1; /* Màu be nhạt cho khu vực nội dung chính của giapha */
+    --node-border-color: #a0a0a0; /* Màu viền của ô trong giapha */
+    --line-color: #ccc; /* Màu đường nối trong giapha */
+    --male-border-color: #3f51b5; /* Màu xanh đậm cho nam trong giapha */
+    --female-border-color: #e91e63; /* Màu hồng đậm cho nữ trong giapha */
+    --spacing-v: 60px; /* Khoảng cách dọc giữa các thế hệ trong giapha */
+    --spacing-h: 40px; /* Khoảng cách ngang giữa các nhánh con trong giapha */
+
+
+    /* Hình nền */
+    --hinh-nen-toi: url("../assets/bg.jpg");
+    --lop-phu-nen: rgba(0, 0, 0, 0.25);
+
+    /* Kích thước & Khoảng cách */
+    --khoang-cach-cuc-nho: 5px;
+    --khoang-cach-nho: 10px;
+    --khoang-cach-vua: 20px;
+    --khoang-cach-lon: 40px;
+
+    /* Bo góc */
+    --bo-goc-nho: 6px;
+    --bo-goc-vua: 12px;
+    --bo-goc-lon: 20px;
+    --bo-goc-tron: 999px;
+
+    /* Đổ bóng */
+    --do-bong-nhe: 0 2px 5px rgba(0,0,0,0.1);
+    --do-bong-hop: 0 0 10px rgba(0,0,0,0.1);
+    --do-bong-sau: 0 4px 8px rgba(0,0,0,0.2);
+
+    /* Kích thước chữ */
+    --font-base: 16px;
+    --font-nho: 14px;
+    --font-lon: 18px;
+    --kich-co-chu-lon-nho: 24px;
+}
+
+/* --- 3. Các thành phần UI chung (reusable components) --- */
+
+/* Tiêu đề */
+h1 { font-size: 36px; text-align: center; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); }
+h2 { font-size: var(--font-lon); margin-bottom: var(--khoang-cach-vua); color: var(--mau-tieu-de-login); }
+h3 { font-size: var(--font-base); }
+
+/* Ô nhập liệu */
+.input-truong {
+    width: 100%;
+    padding: var(--khoang-cach-nho);
+    margin: var(--khoang-cach-nho) 0;
+    border: 1px solid var(--mau-vien);
+    border-radius: var(--bo-goc-nho);
+    font-size: var(--font-base);
+}
+
+/* Nút bấm chung */
+.nut-bam {
+    background-color: var(--mau-chinh);
+    color: white;
+    border: none;
+    border-radius: var(--bo-goc-tron);
+    padding: var(--khoang-cach-nho) var(--khoang-cach-vua);
+    width: 100%;
+    font-size: var(--font-base);
+    cursor: pointer;
+    margin-top: var(--khoang-cach-nho);
+    transition: background-color 0.2s ease;
+}
+
+.nut-bam:hover {
+    background-color: var(--mau-chinh-hover);
+}
+
+/* Thông báo lỗi (ví dụ: Không tìm thấy kết quả) */
+.thong-bao-loi {
+    color: var(--mau-do-thong-bao);
+    font-size: var(--font-nho);
+    margin-top: var(--khoang-cach-nho);
+    display: none; /* Mặc định ẩn */
+    width: 100%; /* Đảm bảo chiếm đủ chiều rộng */
+    text-align: center;
+}
+
+/* Toast Notification (thông báo nhỏ pop-up) */
+.thong-bao-nho {
+    position: fixed; /* Đổi thành fixed để luôn ở trên cùng màn hình */
+    top: 20px; /* Cách mép trên 20px */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--mau-xanh-la-thong-bao); /* Mặc định màu xanh lá */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    font-size: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    white-space: nowrap;
+}
+
+.thong-bao-nho.hien-thi {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.thong-bao-nho.thanh-cong {
+    background-color: var(--mau-xanh-la-thong-bao);
+}
+
+.thong-bao-nho.that-bai {
+    background-color: var(--mau-do-thong-bao);
+}
+
+
+/* --- Các thành phần chung cho trang quản lý (ví dụ: bảng, search bar, nút thao tác) --- */
+
+
+
+/* --- 4. Bố cục tổng thể các trang (Layouts) --- */
+
+/* Dùng cho các trang đăng nhập, đăng ký, quên mật khẩu (khung chia 2 cột) */
+.trang-form-khung {
+    display: flex;
+    height: 100vh;
+}
+
+.khung-trai {
+    width: 30%;
+    position: relative;
+    background: var(--hinh-nen-toi) no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 1;
+}
+
+.khung-trai::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--lop-phu-nen);
+    z-index: 2;
+}
+
+.khung-trai h1 {
+    position: relative;
+    z-index: 3;
+    color: white;
+}
+
+.khung-phai {
+    width: 70%;
+    background-color: var(--nen-sang);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hộp form chung (Đăng nhập, Đăng ký, Quên mật khẩu) */
+.the-form-chung {
+    background-color: var(--nen-hop-login);
+    padding: var(--khoang-cach-lon);
+    border-radius: var(--bo-goc-vua);
+    width: 380px;
+    box-shadow: var(--do-bong-hop);
+    text-align: center;
+}
+
+/* --- 5. Bố cục trang có Sidebar (ví dụ: Trang cá nhân, Dashboard, Giapha) --- */
+
+/* Thay thế .container từ giapha.css */
+.khung-trang { /* Được sử dụng thay cho .container từ giapha.css */
+    display: flex;
+    min-height: 100vh; /* Đảm bảo chiều cao tối thiểu */
+    width: 100vw; /* Đảm bảo chiếm toàn bộ chiều rộng */
+}
+
+/* Sidebar - Thanh điều hướng bên trái (Thống nhất với chung.css) */
+.thanh-ben {
+    width: 220px;
+    background-color: var(--mau-chinh-dam); /* Sử dụng biến màu từ chung.css */
+    color: white; /* Giữ màu chữ trắng cho thanh bên */
+    padding: var(--khoang-cach-vua);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: relative;
+    flex-shrink: 0; /* Không co lại */
+    box-sizing: border-box; /* Từ giapha.css, quan trọng để padding không làm tăng width */
+}
+
+.thanh-ben h2 {
+    font-size: var(--kich-co-chu-lon-nho);
+    margin-bottom: var(--khoang-cach-vua);
+    color: white; /* Đảm bảo màu chữ trắng */
+    margin-top: 0; /* Từ giapha.css để reset margin mặc định */
+    text-align: left; /* Từ giapha.css để căn trái tiêu đề sidebar */
+}
+
+.thanh-ben ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0; /* Từ giapha.css */
+    flex-grow: 1; /* Từ giapha.css */
+}
+
+.thanh-ben ul li {
+    margin: var(--khoang-cach-nho) 0; /* Sử dụng biến từ chung.css */
+    cursor: pointer;
+    margin-bottom: 10px; /* Thêm lại từ giapha.css nếu muốn khoảng cách nhỏ hơn */
+}
+
+.thanh-ben ul li a {
+    display: block;
+    padding: var(--khoang-cach-cuc-nho) 0;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    padding: 5px 10px; /* Từ giapha.css để có padding trong các liên kết */
+    border-radius: 4px; /* Từ giapha.css */
+}
+
+.thanh-ben ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.thanh-ben ul li a.active { /* Thêm từ giapha.css */
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Khu vực người dùng và Dropdown trong Sidebar */
+.khu-vuc-ngu-dung {
+    margin-top: var(--khoang-cach-lon);
+    position: relative;
+    cursor: pointer;
+}
+
+.hop-nguoi-dung {
+    display: flex;
+    align-items: center;
+    gap: var(--khoang-cach-nho);
+    padding: var(--khoang-cach-cuc-nho);
+    border-radius: var(--bo-goc-nho);
+    transition: background-color 0.2s ease;
+}
+
+.hop-nguoi-dung:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.hop-nguoi-dung img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.hop-nguoi-dung .thong-tin {
+    display: flex;
+    flex-direction: column;
+}
+
+.hop-nguoi-dung .thong-tin strong {
+    font-size: var(--font-nho);
+    line-height: 1.2;
+}
+
+.menu-tha-xuong {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    background-color: var(--nen-hop-login);
+    color: var(--mau-chu);
+    padding: var(--khoang-cach-nho);
+    border-radius: var(--bo-goc-nho);
+    display: none;
+    box-shadow: var(--do-bong-hop);
+    z-index: 10;
+    width: 180px;
+}
+
+.menu-tha-xuong.hien-thi { /* Thêm class này cho hiển thị */
+    display: block;
+}
+
+.menu-tha-xuong p {
+    margin: 0;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.menu-tha-xuong p:hover {
+    background-color: var(--nen-hover-nho);
+}
+
+/* Submenu (Phả hệ, Phả ký) */
+.menu-con {
+    display: none;
+    padding-left: var(--khoang-cach-vua);
+    list-style: none;
+    overflow: hidden; /* Quan trọng cho hiệu ứng trượt */
+    max-height: 0;
+    transition: max-height 0.3s ease-out; /* Hiệu ứng trượt */
+}
+
+.menu-con.hien-thi {
+    display: block; /* Vẫn giữ display block khi js thêm class hien-thi */
+    max-height: 500px; /* Giá trị đủ lớn để submenu hiện ra */
+}
+
+.co-menu-con .mui-ten {
+    font-size: 12px;
+    margin-left: 5px;
+    transition: transform 0.2s ease;
+}
+
+.co-menu-con span[aria-expanded="true"] .mui-ten {
+    transform: rotate(180deg);
+}
+
+/* Main Content Area (Thống nhất với chung.css) */
+.main-content { /* Được sử dụng thay cho .main-content từ giapha.css */
+    flex: 1;
+    background-color: var(--nen-sang); /* Sử dụng biến màu từ chung.css */
+    padding: var(--khoang-cach-lon);
+    overflow: auto; /* Cho phép cuộn nếu nội dung cây phả hệ lớn */
+    position: relative; /* Quan trọng để SVG có thể định vị tương đối */
+}
+
+.main-content h1 {
+    color: var(--mau-chu); /* Sử dụng biến màu từ chung.css */
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: var(--khoang-cach-lon); /* Sử dụng biến từ chung.css */
+}
+
+/* Hộp thông tin cá nhân (Profile Card) */
+.hop-thong-tin-ca-nhan {
+    max-width: 500px;
+    background-color: var(--nen-hop-login);
+    padding: var(--khoang-cach-lon);
+    border-radius: var(--bo-goc-vua);
+    margin: auto;
+    box-shadow: var(--do-bong-hop);
+    text-align: center;
+    position: relative; /* Rất quan trọng để toast position: absolute hoạt động đúng */
+    overflow: visible;
+}
+
+/* Avatar Upload Area */
+.khung-avatar {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto var(--khoang-cach-vua);
+    cursor: pointer;
+}
+
+.anh-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--mau-vien);
+}
+
+.bieu-tuong-avatar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: var(--nen-hop-login);
+    color: var(--mau-chinh);
+    border-radius: 50%;
+    padding: 6px;
+    font-size: 14px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+}
+
+/* Modal (Pop-up) chung - Nơi chứa các modal Thêm, Sửa, Xóa */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Lớp phủ mờ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden; /* Mặc định ẩn, không chiếm chỗ */
+    opacity: 0; /* Mặc định trong suốt */
+    transition: visibility 0.3s, opacity 0.3s;
+}
+
+.modal-noi-dung {
+    background-color: white;
+    padding: var(--khoang-cach-lon);
+    border-radius: var(--bo-goc-vua);
+    width: 450px; /* Chiều rộng cố định như ảnh */
+    max-width: 90%; /* Đảm bảo không quá rộng trên màn hình nhỏ */
+    box-shadow: var(--do-bong-sau);
+    position: relative;
+    text-align: center; /* Căn giữa nội dung bên trong modal */
+}
+
+.modal-noi-dung h2 {
+    color: var(--mau-tieu-de-login);
+    margin-bottom: var(--khoang-cach-vua);
+    font-size: var(--font-lon);
+}
+
+.modal-noi-dung .input-truong,
+.modal-noi-dung select.input-truong {
+    width: 100%;
+    padding: var(--khoang-cach-nho);
+    margin: var(--khoang-cach-nho) auto; /* Căn giữa input */
+    border: 1px solid var(--mau-vien);
+    border-radius: var(--bo-goc-nho);
+    font-size: var(--font-base);
+    display: block; /* Đảm bảo mỗi input/select nằm trên một hàng mới */
+    box-sizing: border-box; /* Bao gồm padding và border vào width */
+}
+
+.modal-noi-dung .nut-bam {
+    margin-top: var(--khoang-cach-vua);
+    width: auto; /* Để nút không chiếm hết chiều rộng modal */
+    padding: var(--khoang-cach-nho) var(--khoang-cach-lon);
+    min-width: 150px;
+}
+
+.nut-dong-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--mau-chinh); /* Màu nút đóng */
+    color: white;
+    border: none;
+    border-radius: var(--bo-goc-nho); /* Bo góc nhỏ cho nút đóng */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.nut-dong-modal:hover {
+    background-color: var(--mau-chinh-hover);
+}
+
+/* Modal xác nhận (cho xóa) */
+.modal-confirm {
+    text-align: center;
+    padding-top: var(--khoang-cach-lon);
+    padding-bottom: var(--khoang-cach-lon);
+}
+
+.modal-confirm p {
+    font-size: var(--font-base);
+    margin-bottom: var(--khoang-cach-vua);
+    color: var(--mau-chu);
+}
+
+.khung-nut-confirm {
+    display: flex;
+    justify-content: center;
+    gap: var(--khoang-cach-vua);
+    margin-top: var(--khoang-cach-vua);
+}
+
+.nut-xoa-confirm {
+    background-color: var(--mau-do-xoa); /* Màu đỏ cho nút xóa */
+    width: auto;
+    min-width: 100px;
+}
+.nut-xoa-confirm:hover {
+    background-color: var(--mau-do-xoa-hover);
+}
+
+.nut-huy-confirm {
+    background-color: var(--mau-xam-huy); /* Màu xám cho nút hủy */
+    width: auto;
+    min-width: 100px;
+}
+.nut-huy-confirm:hover {
+    background-color: var(--mau-xam-huy-hover);
+}
+
+/* Khi modal hiện lên */
+.modal.hien-thi { /* Đã thay đổi cách hiển thị modal bằng class để dễ điều khiển qua JS */
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Style cho banner tiêu đề trang */
+.banner-tieu-de-trang {
+    background-color: var(--mau-chinh); /* Sử dụng màu vàng đậm của nút bấm/sidebar */
+    color: white; /* Chữ trắng */
+    padding: var(--khoang-cach-nho) var(--khoang-cach-lon); /* Padding vừa phải */
+    margin-bottom: var(--khoang-cach-vua); /* Khoảng cách với nội dung bên dưới */
+    border-radius: var(--bo-goc-nho); /* Bo góc nhẹ */
+    box-shadow: var(--do-bong-nhe); /* Đổ bóng nhẹ */
+    text-align: left; /* Căn trái tiêu đề */
+    display: flex; /* Dùng flexbox để căn chỉnh nếu có icon hoặc phần tử khác */
+    align-items: center;
+}
+
+.banner-tieu-de-trang h1 {
+    font-size: var(--kich-co-chu-lon-nho); /* Kích thước chữ lớn */
+    margin: 0; /* Bỏ margin mặc định của h1 */
+    color: white; /* Đảm bảo chữ màu trắng */
+    text-shadow: none; /* Bỏ đổ bóng chữ nếu có */
+}
+
+/* --- Style cho cây gia phả (từ giapha.css, tích hợp vào chung.css) --- */
+
+/* SVG container for lines */
+.tree-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicks to pass through to underlying HTML elements */
+    z-index: 0; /* Đảm bảo đường nối nằm dưới các hộp người */
+}
+
+/* Style cho cây gia phả (dựa trên UL/LI) */
+.tree {
+    /* Đảm bảo tree có vị trí tương đối cho các hộp người */
+    position: relative;
+    padding: var(--khoang-cach-vua); /* Sử dụng biến từ chung.css */
+    text-align: center;
+    /* Loại bỏ overflow-x vì SVG sẽ tự điều chỉnh kích thước */
+}
+
+.tree ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Căn giữa các li con */
+    flex-wrap: nowrap; /* Ngăn các li xuống dòng */
+}
+
+.tree li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: var(--spacing-v) var(--spacing-h) 0 var(--spacing-h); /* Khoảng cách trên và hai bên */
+    transition: all 0.5s;
+    vertical-align: top;
+    flex-shrink: 0; /* Ngăn li co lại */
+}
+/* Style cho từng đơn vị gia đình (couple hoặc người độc thân) - nằm trong li */
+.family-unit {
+    border: 1px solid var(--node-border-color);
+    padding: 15px;
+    border-radius: 5px;
+    background-color: transparent; /* Đặt lại màu nền trắng để nổi bật */
+    min-width: 120px;
+    text-align: center;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Thêm đổ bóng nhẹ */
+    z-index: 1; /* Đảm bảo hộp người nằm trên đường SVG */
+    position: relative; /* Cần thiết để lấy vị trí chính xác cho JS */
+}
+
+/* Style cho phần cha/mẹ trong family-unit */
+.parents {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Style cho từng người */
+.person {
+    padding: 10px 15px;
+    border: 1px solid var(--node-border-color);
+    border-radius: 3px;
+    background-color: transparent; /* Giữ nền trắng */
+    font-size: 1em;
+    color: var(--text-color);
+    display: inline-block;
+    /* Thêm hiệu ứng grid nhẹ như ảnh */
+    background-image: linear-gradient(0deg, transparent 95%, #eee 95%), linear-gradient(90deg, transparent 95%, #eee 95%);
+    background-size: 20px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Đổ bóng nhẹ hơn */
+}
+
+/* Ví dụ để tạo màu viền khác nhau cho nam/nữ nếu bạn có thuộc tính data-gender */
+/* .person[data-gender="male"] { border-color: var(--male-border-color); }
+.person[data-gender="female"] { border-color: var(--female-border-color); } */
+
+/* Style cho danh sách con cái (ul con bên trong family-unit) */
+.children {
+    padding-top: var(--spacing-v); /* Khoảng trống cho đường nối từ cha mẹ xuống */
+    position: relative;
+    text-align: center;
+    margin: 0;
+    padding-left: 0;
+    display: flex; /* Đảm bảo các con nằm ngang */
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+/* Adjust for first ul not having parent line */
+.tree > ul {
+    padding-top: 0;
+}
+
+/* Đảm bảo các hộp không bị co khi flex-grow */
+.tree ul li {
+    flex-shrink: 0;
+}
+#connection-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+/* --- 6. Responsive Design (cho tất cả các trang có layout tương tự) --- */
+
+/* Responsive cho các trang form (đăng nhập, đăng ký, quên mật khẩu) */
+@media (max-width: 768px) {
+    .trang-form-khung {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .khung-trai {
+        width: 100%;
+        height: 200px;
+        padding: var(--khoang-cach-vua);
+    }
+
+    .khung-trai h1 {
+        font-size: 28px;
+    }
+
+    .khung-phai {
+        width: 100%;
+        padding: var(--khoang-cach-vua);
+    }
+
+    .the-form-chung {
+        width: 100%;
+        padding: var(--khoang-cach-vua);
+        border-radius: var(--bo-goc-nho);
+    }
+}
+
+@media (max-width: 480px) {
+    .the-form-chung {
+        padding: var(--khoang-cach-nho);
+    }
+    .khung-trai h1 {
+        font-size: 24px;
+    }
+}
+
+/* Responsive cho các trang có Sidebar (ví dụ: Trang cá nhân, Dashboard) */
+.nut-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .nut-hamburger {
+        display: block;
+    }
+    .khung-trang {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    .thanh-ben {
+        width: 100%;
+        height: auto;
+        padding: var(--khoang-cach-vua);
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .thanh-ben h2 {
+        margin-bottom: 0;
+        font-size: 20px;
+    }
+    .thanh-ben nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--mau-chinh-dam);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 99;
+        flex-direction: column;
+        padding: var(--khoang-cach-nho);
+    }
+    .thanh-ben nav.hien-thi {
+        display: flex;
+    }
+    .khu-vuc-ngu-dung {
+        margin-top: 0;
+        position: static;
+    }
+    .thanh-ben.menu-mo .khu-vuc-ngu-dung {
+        display: none;
+    }
+    .menu-tha-xuong {
+        bottom: unset;
+        top: 50px;
+        right: 0;
+        left: unset;
+        width: 150px;
+    }
+    .noi-dung-chinh {
+        padding: var(--khoang-cach-vua);
+        width: 100%;
+    }
+    .hop-thong-tin-ca-nhan {
+        width: 100%;
+        padding: var(--khoang-cach-vua);
+        border-radius: var(--bo-goc-nho);
+    }
+
+    /* Responsive cho bảng chung trên mobile */
+    .khu-vuc-dieu-khien {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .khung-tim-kiem {
+        flex-direction: column;
+        width: 100%;
+        margin-top: var(--khoang-cach-nho);
+    }
+    .input-tim-kiem, .nut-tim-kiem, .nut-bam-phu {
+        width: 100%;
+        max-width: unset; /* Bỏ max-width để nó chiếm hết chiều rộng */
+    }
+
+    .bang-chung {
+        min-width: unset; /* Bỏ giới hạn min-width cho màn hình nhỏ */
+    }
+
+    .bang-chung thead {
+        display: none; /* Ẩn header bảng trên mobile */
+    }
+
+    .bang-chung, .bang-chung tbody, .bang-chung tr, .bang-chung td {
+        display: block; /* Chuyển các phần tử bảng thành block */
+        width: 100%; /* Chiếm hết chiều rộng */
+    }
+
+    .bang-chung tr {
+        margin-bottom: var(--khoang-cach-nho);
+        border: 1px solid var(--mau-vien);
+        border-radius: var(--bo-goc-nho);
+        background-color: white;
+        box-shadow: var(--do-bong-nhe);
+        padding: var(--khoang-cach-nho);
+    }
+    /* Sửa lại background cho hàng trên mobile để hiển thị đúng khi thẻ thead bị ẩn */
+    .bang-chung tr:nth-child(even) { /* Áp dụng trực tiếp lên tr */
+        background-color: var(--nen-sang);
+    }
+
+    .bang-chung tr:nth-child(odd) { /* Áp dụng trực tiếp lên tr */
+        background-color: white;
+    }
+
+
+    .bang-chung td {
+        border: none;
+        position: relative;
+        padding-left: 50%; /* Tạo khoảng trống cho nhãn */
+        text-align: right; /* Căn phải nội dung */
+    }
+
+    .bang-chung td::before {
+        content: attr(data-label); /* Hiển thị nhãn từ thuộc tính data-label */
+        position: absolute;
+        left: var(--khoang-cach-nho);
+        width: calc(50% - var(--khoang-cach-nho));
+        padding-right: var(--khoang-cach-nho);
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        color: var(--mau-chu);
+    }
+}
+
+@media (max-width: 480px) {
+    .thanh-ben {
+        padding: var(--khoang-cach-nho);
+    }
+    .thanh-ben h2 {
+        font-size: 18px;
+    }
+    .thanh-ben nav {
+        top: 50px;
+    }
+    .noi-dung-chinh {
+        padding: var(--khoang-cach-nho);
+    }
+    .hop-thong-tin-ca-nhan {
+        padding: var(--khoang-cach-nho);
+    }
+}
