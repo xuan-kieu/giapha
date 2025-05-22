@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tổ tiên - Gia Phả Đại Việt</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/chung.css">
+</head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben" id="thanhBen">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <button class="nut-hamburger" onclick="toggleMobileMenu()" aria-label="Mở/đóng menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav id="menuDieuHuong">
+                    <ul>
+                        <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaHe')" role="button" aria-expanded="false">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaHe">
+                                <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                                <li><a href="caygiapha.html">Cây gia phả</a></li>
+                            </ul>
+                        </li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaKy')" role="button" aria-expanded="true">Phả ký <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con hien-thi" id="menuConPhaKy">
+                                <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                                <li><a href="lichsu.html">Lịch sử</a></li>
+                                <li><a href="totien.html">Tổ tiên</a></li>
+                                <li><a href="truyenthong.html">Truyền thống</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="congduc.html">Công đức</a></li>
+                        <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                        <li><a href="hinhanh.html">Hình ảnh</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="Ảnh đại diện">
+                    <div class="thong-tin">
+                        <strong>user</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Tổ tiên</h1>
+            </div>
+
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="moModalToTien('them')">
+                    <i class="fa-solid fa-plus"></i> Thêm tổ tiên
+                </button>
+                <div class="khung-tim-kiem">
+                    <input type="text" class="input-tim-kiem" id="inputTimToTien" placeholder="Nhập ID hoặc Tên tổ tiên...">
+                    <button class="nut-tim-kiem" onclick="timToTien()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm
+                    </button>
+                </div>
+            </div>
+
+            <div id="thongBaoKhongKetQua" class="thong-bao-loi" style="display: none;">Không tìm thấy kết quả nào.</div>
+
+            <div class="khung-bang">
+                <table class="bang-chung">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Mô tả</th>
+                            <th class="cot-thao-tac">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="noiDungBangToTien">
+                        </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="toastNotification" class="thong-bao-nho">
+        <i class="fa-solid" id="toastIcon"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <div id="modalToTien" class="modal">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="dongModalToTien()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="tieuDeModal">Thêm Tổ tiên mới</h2>
+            <form id="formToTien">
+                <input type="hidden" id="idToTien">
+                <input type="text" id="tenToTien" class="input-truong" placeholder="Tên Tổ tiên" required>
+                <textarea id="moTaToTien" class="input-truong" placeholder="Mô tả"></textarea>
+                <div class="modal-buttons">
+                    <button type="submit" class="nut-bam">Thêm Tổ tiên</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalXacNhanXoa" class="modal">
+        <div class="modal-noi-dung modal-confirm">
+            <p>Bạn có chắc chắn muốn xóa tổ tiên này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-huy-confirm" onclick="dongModalXacNhanXoa()">Hủy</button>
+                <button class="nut-bam nut-xoa-confirm" id="nutXacNhanXoa">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+ <script>
+const API_URL = "https://682ed083746f8ca4a47e6bb5.mockapi.io/user"; // 🔁 Đổi thành MockAPI thật
+let idToTienDangXoa = null;
+
+// --- Sidebar & Dropdown ---
+function toggleDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('hien-thi');
+    const khuVucNguDung = document.querySelector('.khu-vuc-ngu-dung');
+    khuVucNguDung.setAttribute('aria-expanded', dropdown.classList.contains('hien-thi'));
+}
+
+function logout() {
+    alert('Đăng xuất thành công!');
+    window.location.href = 'dangnhap.html';
+}
+
+function toggleSubmenu(id) {
+    const submenu = document.getElementById(id);
+    const parentSpan = submenu.previousElementSibling;
+    submenu.classList.toggle('hien-thi');
+    parentSpan.setAttribute('aria-expanded', submenu.classList.contains('hien-thi'));
+}
+
+function toggleMobileMenu() {
+    const menu = document.getElementById('menuDieuHuong');
+    const thanhBen = document.getElementById('thanhBen');
+    menu.classList.toggle('hien-thi');
+    thanhBen.classList.toggle('menu-mo');
+}
+
+window.onclick = function(event) {
+    if (!event.target.matches('.khu-vuc-ngu-dung, .khu-vuc-ngu-dung *')) {
+        const dropdowns = document.getElementsByClassName('menu-tha-xuong');
+        for (let i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('hien-thi')) {
+                openDropdown.classList.remove('hien-thi');
+                document.querySelector('.khu-vuc-ngu-dung').setAttribute('aria-expanded', 'false');
+            }
+        }
+    }
+    if (event.target === document.getElementById('modalToTien')) dongModalToTien();
+    if (event.target === document.getElementById('modalXacNhanXoa')) dongModalXacNhanXoa();
+};
+
+function hienThiToast(message, type = 'thanh-cong') {
+    const toast = document.getElementById('toastNotification');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    toastMessage.textContent = message;
+    toast.className = 'thong-bao-nho hien-thi';
+    toastIcon.className = 'fa-solid';
+    if (type === 'thanh-cong') toastIcon.classList.add('fa-check-circle');
+    else toastIcon.classList.add('fa-times-circle');
+    toast.classList.add(type);
+    setTimeout(() => toast.classList.remove('hien-thi', 'thanh-cong', 'that-bai'), 3000);
+}
+
+// --- Modal Thêm/Sửa ---
+const modalToTien = document.getElementById('modalToTien');
+const formToTien = document.getElementById('formToTien');
+const tieuDeModal = document.getElementById('tieuDeModal');
+const idToTienInput = document.getElementById('idToTien');
+const tenToTienInput = document.getElementById('tenToTien');
+const moTaToTienInput = document.getElementById('moTaToTien');
+const nutSubmitModal = document.querySelector('#formToTien .nut-bam');
+
+function moModalToTien(hanhDong, id = null) {
+    modalToTien.classList.add('hien-thi');
+    formToTien.reset();
+    if (hanhDong === 'them') {
+        tieuDeModal.textContent = 'Thêm Tổ tiên mới';
+        idToTienInput.value = '';
+        nutSubmitModal.textContent = 'Thêm Tổ tiên';
+    } else if (hanhDong === 'sua' && id !== null) {
+        tieuDeModal.textContent = 'Chỉnh sửa Tổ tiên';
+        nutSubmitModal.textContent = 'Lưu thay đổi';
+        fetch(`${API_URL}/${id}`).then(res => res.json()).then(toTien => {
+            idToTienInput.value = toTien.id;
+            tenToTienInput.value = toTien.totien_name;
+            moTaToTienInput.value = toTien.totien_des;
+        }).catch(() => {
+            hienThiToast('Không tìm thấy tổ tiên để chỉnh sửa!', 'that-bai');
+            dongModalToTien();
+        });
+    }
+}
+
+function dongModalToTien() {
+    modalToTien.classList.remove('hien-thi');
+}
+
+formToTien.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const id = idToTienInput.value;
+    const totien_name = tenToTienInput.value.trim();
+    const totien_des = moTaToTienInput.value.trim();
+    if (!totien_name) {
+        hienThiToast('Tên tổ tiên không được để trống!', 'that-bai');
+        return;
+    }
+    const data = { totien_name, totien_des };
+    try {
+        if (id) {
+            await fetch(`${API_URL}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            hienThiToast('Cập nhật tổ tiên thành công!');
+        } else {
+            await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            hienThiToast('Thêm tổ tiên mới thành công!');
+        }
+        dongModalToTien();
+        taiDanhSachToTien();
+    } catch {
+        hienThiToast('Lỗi kết nối MockAPI!', 'that-bai');
+    }
+});
+
+// --- Modal xác nhận xóa ---
+function moModalXacNhanXoa(id) {
+    idToTienDangXoa = id;
+    document.getElementById('modalXacNhanXoa').classList.add('hien-thi');
+}
+function dongModalXacNhanXoa() {
+    idToTienDangXoa = null;
+    document.getElementById('modalXacNhanXoa').classList.remove('hien-thi');
+}
+
+document.getElementById('nutXacNhanXoa').addEventListener('click', async () => {
+    if (!idToTienDangXoa) return;
+    try {
+        await fetch(`${API_URL}/${idToTienDangXoa}`, { method: "DELETE" });
+        hienThiToast('Xóa tổ tiên thành công!');
+        taiDanhSachToTien();
+        dongModalXacNhanXoa();
+    } catch {
+        hienThiToast('Không thể xóa tổ tiên!', 'that-bai');
+    }
+});
+
+// --- Hiển thị danh sách ---
+async function taiDanhSachToTien() {
+    try {
+        const res = await fetch(API_URL);
+        const danhSach = await res.json();
+        renderDanhSachToTien(danhSach);
+    } catch {
+        hienThiToast('Không thể tải danh sách tổ tiên!', 'that-bai');
+    }
+}
+
+function renderDanhSachToTien(list) {
+    const noiDungBangToTien = document.getElementById('noiDungBangToTien');
+    const thongBaoKhongKetQua = document.getElementById('thongBaoKhongKetQua');
+    noiDungBangToTien.innerHTML = '';
+    if (list.length === 0) {
+        thongBaoKhongKetQua.style.display = 'block';
+        return;
+    } else {
+        thongBaoKhongKetQua.style.display = 'none';
+    }
+    list.forEach(toTien => {
+        const row = noiDungBangToTien.insertRow();
+        row.innerHTML = `
+            <td data-label="ID">${toTien.id}</td>
+            <td data-label="Tên">${toTien.totien_name}</td>
+            <td data-label="Mô tả">${toTien.totien_des}</td>
+            <td class="cot-thao-tac" data-label="Thao tác">
+                <button class="nut-thao-tac nut-sua" onclick="moModalToTien('sua', '${toTien.id}')">
+                    <i class="fa-solid fa-pencil"></i> Sửa
+                </button>
+                <button class="nut-thao-tac nut-xoa" onclick="moModalXacNhanXoa('${toTien.id}')">
+                    <i class="fa-solid fa-trash-can"></i> Xóa
+                </button>
+            </td>`;
+    });
+}
+
+function timToTien() {
+    const searchTerm = document.getElementById('inputTimToTien').value.toLowerCase();
+    fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+            const ketQua = data.filter(toTien =>
+                toTien.totien_name.toLowerCase().includes(searchTerm) ||
+                String(toTien.id).includes(searchTerm)
+            );
+            renderDanhSachToTien(ketQua);
+        })
+        .catch(() => hienThiToast("Không thể tìm kiếm!", 'that-bai'));
+}
+
+// --- Khởi tạo khi trang tải ---
+document.addEventListener('DOMContentLoaded', taiDanhSachToTien);
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quên mật khẩu - Gia Phả Đại Việt</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/chung.css">
+    <link rel="stylesheet" href="css/quenmatkhau.css">
+
+</head>
+<body>
+    <div class="trang-khoi-phuc-khung"> <div class="khung-trai"> <h1>Gia Phả<br>Đại Việt</h1>
+        </div>
+        <div class="khung-phai"> <div class="the-khoi-phuc"> <h2>Khôi phục mật khẩu</h2>
+                <input type="email" class="input-truong" id="recoverEmail" placeholder="Nhập email của bạn" required> <button class="nut-bam" onclick="recoverPassword()">Gửi liên kết khôi phục</button> <div class="link-quay-lai">Đã nhớ mật khẩu? <a href="dangnhap.html">Đăng nhập</a></div> </div>
+        </div>
+    </div>
+
+    <script>
+        function recoverPassword() {
+            const email = document.getElementById("recoverEmail").value;
+            if (email) {
+                alert("Liên kết khôi phục đã được gửi tới " + email + " (mockup).");
+                window.location.href = "dangnhap.html"; // Đã đổi về dangnhap.html nếu bạn đổi tên file
+            } else {
+                alert("Vui lòng nhập email.");
+            }
+        }
+    </script>
+</body>
+</html>

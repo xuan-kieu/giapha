@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ngoại phả - Gia Phả Đại Việt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/chung.css">
+    </head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben" id="thanhBen">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <button class="nut-hamburger" onclick="toggleMenuDiDong()" aria-label="Mở/đóng menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav id="menuDieuHuong">
+                    <ul>
+                        <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleMenuCon('menuConPhaHe')" role="button" aria-expanded="false">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaHe">
+                                <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                                <li><a href="caygiapha.html">Cây gia phả</a></li>
+                            </ul>
+                        </li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleMenuCon('menuConPhaKy')" role="button" aria-expanded="false">Phả ký <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaKy">
+                                <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                                <li><a href="lichsu.html">Lịch sử</a></li>
+                                <li><a href="totien.html">Tổ tiên</a></li>
+                                <li><a href="truyenthong.html">Truyền thống</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="congduc.html">Công đức</a></li>
+                        <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                        <li><a href="hinhanh.html">Hình ảnh</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleMenuNguoiDung()" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="Ảnh đại diện">
+                    <div class="thong-tin">
+                        <strong>User</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="menuThaXuongNguoiDung">
+                    <p onclick="dangXuat()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Quản lý bài viết Ngoại phả</h1>
+            </div>
+
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="moModalThemSuaBaiViet()">
+                    <i class="fa-solid fa-plus"></i> Thêm bài viết
+                </button>
+                <div class="khung-tim-kiem">
+                    <input type="text" class="input-tim-kiem" placeholder="Nhập từ khóa tiêu đề" id="oTimKiem">
+                    <button class="nut-tim-kiem" onclick="timKiemBaiViet()">Tìm kiếm</button>
+                </div>
+                <div id="thongBaoKhongKetQua" class="thong-bao-loi">Không tìm thấy kết quả</div>
+            </div>
+
+            <div class="khung-bang">
+                <table class="bang-chung">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Họ tộc</th>
+                            <th>Ngày đăng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="noiDungBangBaiViet">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalThemSuaBaiViet" class="modal">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="dongModalThemSuaBaiViet()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="tieuDeModal">Thêm bài viết Ngoại phả</h2>
+            <input type="text" class="input-truong" placeholder="Tiêu đề bài viết" id="tieuDeBaiViet">
+            <input type="text" class="input-truong" placeholder="Tên họ tộc" id="hoTocBaiViet">
+            <input type="date" class="input-truong" placeholder="Ngày đăng" id="ngayDangBaiViet">
+            <textarea class="input-truong" placeholder="Nội dung bài viết" rows="4" id="noiDungBaiViet"></textarea>
+            <button class="nut-bam" onclick="xacNhanThemHoacCapNhatBaiViet()">Xác nhận</button>
+        </div>
+    </div>
+
+    <div id="modalXacNhanXoa" class="modal">
+        <div class="modal-noi-dung modal-confirm">
+            <button class="nut-dong-modal" onclick="dongModalXacNhanXoa()"><i class="fa-solid fa-xmark"></i></button>
+            <p>Bạn có chắc muốn xóa bài viết này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-bam nut-xoa-confirm" onclick="xacNhanXoaBaiViet()">Xóa</button>
+                <button class="nut-bam nut-huy-confirm" onclick="dongModalXacNhanXoa()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="thongBaoNho" class="thong-bao-nho">
+        <i class="fa-solid" id="bieuTuongThongBao"></i>
+        <span id="noiDungThongBao"></span>
+    </div>
+
+<script>
+    const API_URL = "https://682ed083746f8ca4a47e6bb5.mockapi.io/user";
+
+    let danhSachBaiViet = [];
+    let idBaiVietDangChinhSua = null;
+    let idBaiVietCanXoa = null;
+
+    async function fetchBaiViet() {
+        try {
+            const res = await fetch(API_URL);
+            if (!res.ok) throw new Error("Lỗi tải dữ liệu");
+            danhSachBaiViet = await res.json();
+            renderBangBaiViet(danhSachBaiViet);
+        } catch (err) {
+            hienThiThongBao("Không thể tải dữ liệu bài viết", "error");
+        }
+    }
+
+    function hienThiThongBao(thongDiep, loai = 'success') {
+        const toast = document.getElementById('thongBaoNho');
+        const bieuTuong = document.getElementById('bieuTuongThongBao');
+        const noiDung = document.getElementById('noiDungThongBao');
+
+        toast.classList.remove('thanh-cong', 'that-bai', 'hien-thi');
+        bieuTuong.className = 'fa-solid';
+
+        noiDung.textContent = thongDiep;
+
+        if (loai === 'success') {
+            toast.classList.add('thanh-cong');
+            bieuTuong.classList.add('fa-check-circle');
+        } else {
+            toast.classList.add('that-bai');
+            bieuTuong.classList.add('fa-xmark-circle');
+        }
+
+        toast.classList.add('hien-thi');
+
+        setTimeout(() => {
+            toast.classList.remove('hien-thi');
+        }, 3000);
+    }
+
+    function renderBangBaiViet(duLieu = danhSachBaiViet) {
+        const noiDungBang = document.getElementById('noiDungBangBaiViet');
+        noiDungBang.innerHTML = '';
+        const thongBao = document.getElementById('thongBaoKhongKetQua');
+
+        if (duLieu.length === 0) {
+            thongBao.style.display = 'block';
+            return;
+        } else {
+            thongBao.style.display = 'none';
+        }
+
+        duLieu.forEach(baiViet => {
+            const dong = `
+                <tr>
+                    <td data-label="Tiêu đề">${baiViet.ngoaipha_title}</td>
+                    <td data-label="Họ tộc">${baiViet.ngoaipha_clan}</td>
+                    <td data-label="Ngày đăng">${baiViet.ngoaipha_date}</td>
+                    <td class="cot-thao-tac" data-label="Thao tác">
+                        <button class="nut-thao-tac nut-sua" onclick="moModalThemSuaBaiViet('${baiViet.id}')">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="nut-thao-tac nut-xoa" onclick="moModalXacNhanXoa('${baiViet.id}')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            noiDungBang.innerHTML += dong;
+        });
+    }
+
+    function moModalThemSuaBaiViet(id = null) {
+        const tieuDeModal = document.getElementById('tieuDeModal');
+        const oTieuDe = document.getElementById('tieuDeBaiViet');
+        const oHoToc = document.getElementById('hoTocBaiViet');
+        const oNgayDang = document.getElementById('ngayDangBaiViet');
+        const oNoiDung = document.getElementById('noiDungBaiViet');
+
+        if (id) {
+            const baiViet = danhSachBaiViet.find(p => p.id === id);
+            if (baiViet) {
+                tieuDeModal.innerText = 'Chỉnh sửa bài viết Ngoại phả';
+                oTieuDe.value = baiViet.ngoaipha_title;
+                oHoToc.value = baiViet.ngoaipha_clan;
+                oNgayDang.value = baiViet.ngoaipha_date;
+                oNoiDung.value = baiViet.content || '';
+                idBaiVietDangChinhSua = id;
+            }
+        } else {
+            tieuDeModal.innerText = 'Thêm bài viết Ngoại phả';
+            oTieuDe.value = '';
+            oHoToc.value = '';
+            oNgayDang.value = '';
+            oNoiDung.value = '';
+            idBaiVietDangChinhSua = null;
+        }
+        document.getElementById('modalThemSuaBaiViet').classList.add('hien-thi');
+    }
+
+    function dongModalThemSuaBaiViet() {
+        document.getElementById('modalThemSuaBaiViet').classList.remove('hien-thi');
+    }
+
+    async function xacNhanThemHoacCapNhatBaiViet() {
+        const title = document.getElementById('tieuDeBaiViet').value.trim();
+        const clan = document.getElementById('hoTocBaiViet').value.trim();
+        const date = document.getElementById('ngayDangBaiViet').value;
+        const content = document.getElementById('noiDungBaiViet').value.trim();
+
+        if (!title || !clan || !date || !content) {
+            hienThiThongBao('Vui lòng điền đầy đủ thông tin!', 'error');
+            return;
+        }
+
+        const duLieu = {
+            ngoaipha_title: title,
+            ngoaipha_clan: clan,
+            ngoaipha_date: date,
+            content: content
+        };
+
+        try {
+            if (idBaiVietDangChinhSua) {
+                await fetch(`${API_URL}/${idBaiVietDangChinhSua}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(duLieu)
+                });
+                hienThiThongBao('Cập nhật bài viết thành công!');
+            } else {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(duLieu)
+                });
+                hienThiThongBao('Thêm bài viết mới thành công!');
+            }
+            dongModalThemSuaBaiViet();
+            fetchBaiViet();
+        } catch (err) {
+            hienThiThongBao('Có lỗi khi lưu bài viết!', 'error');
+        }
+    }
+
+    function moModalXacNhanXoa(id) {
+        idBaiVietCanXoa = id;
+        document.getElementById('modalXacNhanXoa').classList.add('hien-thi');
+    }
+
+    function dongModalXacNhanXoa() {
+        document.getElementById('modalXacNhanXoa').classList.remove('hien-thi');
+        idBaiVietCanXoa = null;
+    }
+
+    async function xacNhanXoaBaiViet() {
+        if (!idBaiVietCanXoa) return;
+        try {
+            await fetch(`${API_URL}/${idBaiVietCanXoa}`, {
+                method: 'DELETE'
+            });
+            hienThiThongBao('Xóa bài viết thành công!');
+            fetchBaiViet();
+        } catch (err) {
+            hienThiThongBao('Lỗi khi xóa bài viết!', 'error');
+        }
+        dongModalXacNhanXoa();
+    }
+
+    function timKiemBaiViet() {
+        const keyword = document.getElementById('oTimKiem').value.toLowerCase().trim();
+        const loc = danhSachBaiViet.filter(bv =>
+            bv.ngoaipha_title.toLowerCase().includes(keyword) ||
+            bv.ngoaipha_clan.toLowerCase().includes(keyword)
+        );
+        renderBangBaiViet(loc);
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchBaiViet);
+</script>
+</body>
+</html>

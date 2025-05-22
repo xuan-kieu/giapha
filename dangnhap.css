@@ -1,0 +1,111 @@
+/* DUAN/css/dangnhap.css */
+
+/* --- Layout chinh cua trang dang nhap (Doc nhat) --- */
+.trang-dang-nhap-khung { /* Thay cho .login-page-container */
+    display: flex;
+    height: 100vh;
+}
+
+.khung-trai { /* Thay cho .left-panel */
+    width: 30%;
+    position: relative;
+    background: var(--hinh-nen-toi) no-repeat center center; /* Su dung bien tieng Viet */
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 1;
+}
+
+.khung-trai::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--lop-phu-nen); /* Su dung bien tieng Viet */
+    z-index: 2;
+}
+
+.khung-trai h1 {
+    position: relative;
+    z-index: 3;
+    /* font-size, text-align, text-shadow da co trong chung.css hoac se duoc dieu chinh boi media query */
+    color: white; /* Giu lai mau trang cho chu Gia Pha Dai Viet */
+}
+
+.khung-phai { /* Thay cho .right-panel */
+    width: 70%;
+    background-color: var(--nen-sang); /* Su dung bien tieng Viet */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.the-dang-nhap { /* Thay cho .login-card */
+    background-color: var(--nen-hop-login); /* Su dung bien tieng Viet */
+    padding: var(--khoang-cach-lon); /* Su dung bien tieng Viet */
+    border-radius: var(--bo-goc-vua); /* Su dung bien tieng Viet */
+    width: 380px;
+    box-shadow: var(--do-bong-hop); /* Su dung bien tieng Viet */
+    text-align: center;
+}
+
+.the-dang-nhap h2 {
+    color: var(--mau-tieu-de-login); /* Su dung bien tieng Viet */
+    /* margin-bottom da co trong chung.css */
+}
+
+.the-dang-nhap .link-quen-mat-khau { /* Thay cho .forgot-password-link */
+    display: block;
+    margin: var(--khoang-cach-nho) 0;
+    font-size: var(--kich-co-chu-nho);
+}
+
+.the-dang-nhap .chu-dang-ky { /* Thay cho .register-text */
+    margin-top: var(--khoang-cach-vua);
+    font-size: var(--kich-co-chu-nho);
+}
+
+
+/* --- Responsive CSS cho Trang Dang nhap --- */
+@media (max-width: 768px) {
+    .trang-dang-nhap-khung {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .khung-trai {
+        width: 100%;
+        height: 200px;
+        padding: var(--khoang-cach-vua);
+    }
+
+    .khung-trai h1 {
+        font-size: 28px;
+    }
+
+    .khung-phai {
+        width: 100%;
+        padding: var(--khoang-cach-vua);
+    }
+
+    .the-dang-nhap {
+        width: 100%;
+        padding: var(--khoang-cach-vua);
+        border-radius: var(--bo-goc-nho);
+    }
+
+    .the-dang-nhap h2 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .the-dang-nhap {
+        padding: var(--khoang-cach-nho);
+    }
+    .khung-trai h1 {
+        font-size: 24px;
+    }
+}

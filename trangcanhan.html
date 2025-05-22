@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang cá nhân - Gia Phả Đại Việt</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/chung.css">
+    <link rel="stylesheet" href="css/trangcanhan.css">
+
+</head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben" id="thanhBen">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <button class="nut-hamburger" onclick="toggleMobileMenu()" aria-label="Mở/đóng menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav id="menuDieuHuong">
+                    <ul>
+                        <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaHe')" role="button" aria-expanded="false">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaHe">
+                                <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                                <li><a href="caygiapha.html">Cây gia phả</a></li>
+                            </ul>
+                        </li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaKy')" role="button" aria-expanded="false">Phả ký <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaKy">
+                                <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                                <li><a href="lichsu.html">Lịch sử</a></li>
+                                <li><a href="totien.html">Tổ tiên</a></li>
+                                <li><a href="truyenthong.html">Truyền thống</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="congduc.html">Công đức</a></li>
+                        <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                        <li><a href="hinhanh.html">Hình ảnh</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="Ảnh đại diện">
+                    <div class="thong-tin">
+                        <strong>User</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="hop-thong-tin-ca-nhan">
+                <div class="khung-avatar" onclick="changeAvatarMock()" role="button" aria-label="Thay đổi ảnh đại diện">
+                    <img src="https://via.placeholder.com/100" alt="Ảnh đại diện" class="anh-avatar">
+                    <i class="fa-solid fa-camera bieu-tuong-avatar"></i>
+                </div>
+                <input type="text" class="input-truong" id="name" placeholder="Tên của bạn">
+                <input type="email" class="input-truong" id="email" placeholder="Email của bạn">
+                <input type="password" class="input-truong" id="password" placeholder="Mật khẩu mới (để trống nếu không đổi)">
+                <button class="nut-bam" onclick="updateUserInfo()">Xác nhận thay đổi</button>
+
+                <div id="emailError" class="thong-bao-loi">Vui lòng nhập email hợp lệ!</div>
+
+                <div class="thong-bao-nho" id="successToast" role="status" aria-live="polite">Cập nhật thông tin thành công!</div>
+            </div>
+        </div>
+    </div>
+<script>
+const API_URL = "https://682ed083746f8ca4a47e6bb5.mockapi.io/user";
+const userId = localStorage.getItem("loggedInUserId") || "1"; // Giả sử đang đăng nhập user có id = 1
+        // --- Chức năng Sidebar và Dropdown chung ---
+        function toggleDropdown() {
+            console.log("toggleDropdown called");
+            const userDropdown = document.getElementById("userDropdown");
+            if (userDropdown) {
+                userDropdown.classList.toggle('hien-thi');
+                if (userDropdown.classList.contains('hien-thi')) {
+                    document.querySelectorAll('.menu-con.hien-thi').forEach(submenu => {
+                        submenu.classList.remove('hien-thi');
+                        submenu.style.maxHeight = '0';
+                        submenu.closest('.co-menu-con')?.classList.remove('active');
+                    });
+                }
+            }
+        }
+
+        function toggleSubmenu(menuId) {
+            console.log("toggleSubmenu called for:", menuId);
+            const submenu = document.getElementById(menuId);
+            if (submenu) {
+                const parentLi = submenu.closest('.co-menu-con');
+                
+                document.querySelectorAll('.menu-con').forEach(sm => {
+                    if (sm.id !== menuId) {
+                        sm.classList.remove('hien-thi');
+                        sm.style.maxHeight = '0';
+                        sm.closest('.co-menu-con')?.classList.remove('active');
+                    }
+                });
+
+                if (submenu.classList.contains('hien-thi')) {
+                    submenu.classList.remove('hien-thi');
+                    submenu.style.maxHeight = '0';
+                    parentLi?.classList.remove('active');
+                } else {
+                    submenu.classList.add('hien-thi');
+                    submenu.style.maxHeight = submenu.scrollHeight + "px";
+                    parentLi?.classList.add('active');
+                }
+
+                const userDropdown = document.getElementById("userDropdown");
+                if (userDropdown && userDropdown.classList.contains('hien-thi')) {
+                    userDropdown.classList.remove('hien-thi');
+                }
+            }
+        }
+
+        function logout() {
+            console.log("logout called");
+            alert("Đăng xuất thành công!");
+            window.location.href = "dangnhap.html";
+        }
+
+
+async function loadUserInfo() {
+  try {
+    const res = await fetch(`${API_URL}/${userId}`);
+    const user = await res.json();
+
+    // Hiển thị thông tin
+    document.querySelector(".anh-avatar").src = user.avatar || "https://via.placeholder.com/100";
+    document.getElementById("name").value = user.name || "";
+    document.getElementById("email").value = user.email || "";
+    document.getElementById("password").value = "";
+
+    // Hiển thị role ở dropdown
+    document.querySelector(".thong-tin strong").textContent = user.role;
+
+    // Phân quyền giao diện
+    if (user.role === "member") {
+      const allowedLinks = ["trangcanhan.html", "caygiapha.html"];
+
+      // Ẩn tất cả các link không thuộc danh sách cho phép
+      document.querySelectorAll("#menuDieuHuong a").forEach(link => {
+        const href = link.getAttribute("href");
+        if (!allowedLinks.some(allowed => href.includes(allowed))) {
+          link.closest("li").style.display = "none";
+        }
+      });
+
+      // Ẩn nhóm menu nếu không còn mục con
+      ["menuConPhaHe", "menuConPhaKy"].forEach(id => {
+        const submenu = document.getElementById(id);
+        if (submenu && submenu.querySelectorAll("li:not([style*='none'])").length === 0) {
+          submenu.parentElement.style.display = "none";
+        }
+      });
+    }
+
+  } catch (err) {
+    console.error("Lỗi tải user:", err);
+    alert("Không thể tải dữ liệu người dùng.");
+  }
+}
+
+
+async function updateUserInfo() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!validateEmail(email)) {
+    document.getElementById("emailError").style.display = "block";
+    return;
+  }
+  document.getElementById("emailError").style.display = "none";
+
+  try {
+    await fetch(`${API_URL}/${userId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    document.getElementById("successToast").style.display = "block";
+    setTimeout(() => {
+      document.getElementById("successToast").style.display = "none";
+    }, 2000);
+  } catch (err) {
+    alert("Cập nhật thất bại!");
+    console.error(err);
+  }
+}
+
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+function changeAvatarMock() {
+  const newUrl = prompt("Nhập URL ảnh mới:");
+  if (newUrl) {
+    document.querySelector(".anh-avatar").src = newUrl;
+    fetch(`${API_URL}/${userId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ avatar: newUrl })
+    });
+  }
+}
+
+function logout() {
+  localStorage.removeItem("loggedInUserId");
+  window.location.href = "DangNhap.html";
+}
+
+window.onload = loadUserInfo;
+</script>
+</body>
+</html>

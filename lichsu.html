@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Sử - Gia Phả Đại Việt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/chung.css">
+</head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <ul>
+                    <li><a href="dashboard.html">Trang cá nhân</a></li>
+                    <li class="co-menu-con">
+                        <span onclick="toggleSubmenu('familySubmenu')">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                        <ul class="menu-con" id="familySubmenu">
+                            <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                            <li><a href="family-tree.html">Cây gia phả</a></li>
+                        </ul>
+                    </li>
+                    <li class="co-menu-con">
+                        <span onclick="toggleSubmenu('kySubmenu')">Phả ký <span class="mui-ten">&#9662;</span></span>
+                        <ul class="menu-con" id="kySubmenu">
+                            <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                            <li><a href="lichsu.html">Lịch sử</a></li>
+                            <li><a href="totien.html">Tổ tiên</a></li>
+                            <li><a href="truyenthong.html">Truyền thống</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="cong-duc.html">Công đức</a></li>
+                    <li><a href="ngoai-pha.html">Hình ảnh</a></li>
+                </ul>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="avatar">
+                    <div class="thong-tin">
+                        <strong>user</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Quản lý bài viết - Lịch Sử</h1>
+            </div>
+            
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="openModal('modalAddPost')">
+                    <i class="fa-solid fa-plus"></i> Thêm bài viết
+                </button>
+                <div class="khung-tim-kiem">
+                    <input type="text" id="searchInput" class="input-tim-kiem" placeholder="Nhập tiêu đề bài viết">
+                    <button class="nut-tim-kiem" onclick="searchPosts()"><i class="fa-solid fa-magnifying-glass"></i> Tìm</button>
+                </div>
+            </div>
+
+            <div id="searchResultStatus" class="thong-bao-ket-qua" style="display: none;">Không tìm thấy kết quả.</div>
+
+            <div class="khung-bang">
+                <table class="bang-chung" id="postTable">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tiêu đề</th>
+                            <th>Mô tả</th>
+                            <th>Ảnh</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="postTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalAddPost">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeModal('modalAddPost')">&times;</button>
+            <h2>Thêm bài viết mới</h2>
+            <input type="text" id="addTitle" class="input-truong" placeholder="Tiêu đề bài viết">
+            <textarea id="addDesc" class="input-truong" rows="4" placeholder="Mô tả ngắn"></textarea>
+            <input type="file" id="addPostImage" accept="image/*" class="input-truong">
+            <button class="nut-bam" onclick="submitAddPost()">Thêm bài viết</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalEditPost">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeModal('modalEditPost')">&times;</button>
+            <h2>Sửa bài viết</h2>
+            <input type="text" id="editTitle" class="input-truong">
+            <textarea id="editDesc" class="input-truong" rows="4"></textarea>
+            <input type="file" id="editPostImage" accept="image/*" class="input-truong">
+            <button class="nut-bam" onclick="submitEditPost()">Cập nhật</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalConfirmDelete">
+        <div class="modal-noi-dung modal-confirm">
+            <button class="nut-dong-modal" onclick="closeModal('modalConfirmDelete')">&times;</button>
+            <h2>Xác nhận xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa bài viết này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-bam nut-xoa-confirm" onclick="deletePost()">Xóa</button>
+                <button class="nut-bam nut-huy-confirm" onclick="closeModal('modalConfirmDelete')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastNotification" class="thong-bao-nho">
+        <span id="toastMessage"></span>
+    </div>
+
+   <script>
+const API_URL = "https://682ed083746f8ca4a47e6bb5.mockapi.io/user"; // 🔁 Đổi thành URL thật của bạn
+let currentEditingId = null;
+let deletePostId = null;
+
+// === Sidebar & Dropdown ===
+function toggleDropdown() {
+    const userDropdown = document.getElementById("userDropdown");
+    if (userDropdown) {
+        userDropdown.classList.toggle('hien-thi');
+        if (userDropdown.classList.contains('hien-thi')) {
+            document.querySelectorAll('.menu-con.hien-thi').forEach(submenu => {
+                submenu.classList.remove('hien-thi');
+                submenu.style.maxHeight = '0';
+                submenu.closest('.co-menu-con')?.classList.remove('active');
+            });
+        }
+    }
+}
+
+function toggleSubmenu(menuId) {
+    const submenu = document.getElementById(menuId);
+    if (!submenu) return;
+    const parentLi = submenu.closest('.co-menu-con');
+
+    document.querySelectorAll('.menu-con').forEach(sm => {
+        if (sm.id !== menuId) {
+            sm.classList.remove('hien-thi');
+            sm.style.maxHeight = '0';
+            sm.closest('.co-menu-con')?.classList.remove('active');
+        }
+    });
+
+    if (submenu.classList.contains('hien-thi')) {
+        submenu.classList.remove('hien-thi');
+        submenu.style.maxHeight = '0';
+        parentLi?.classList.remove('active');
+    } else {
+        submenu.classList.add('hien-thi');
+        submenu.style.maxHeight = submenu.scrollHeight + "px";
+        parentLi?.classList.add('active');
+    }
+
+    const userDropdown = document.getElementById("userDropdown");
+    if (userDropdown?.classList.contains('hien-thi')) {
+        userDropdown.classList.remove('hien-thi');
+    }
+}
+
+function logout() {
+    alert("Đăng xuất thành công!");
+    window.location.href = "login.html";
+}
+
+document.addEventListener('click', function(event) {
+    const userArea = document.querySelector('.khu-vuc-ngu-dung');
+    const userDropdown = document.getElementById('userDropdown');
+    const sidebar = document.querySelector('.thanh-ben');
+
+    if (userArea && userDropdown && !userArea.contains(event.target) && userDropdown.classList.contains('hien-thi')) {
+        userDropdown.classList.remove('hien-thi');
+    }
+
+    let isClickInSubmenu = false;
+    document.querySelectorAll('.co-menu-con span').forEach(span => {
+        if (span.contains(event.target)) isClickInSubmenu = true;
+    });
+
+    if (sidebar && !sidebar.contains(event.target) && !isClickInSubmenu) {
+        document.querySelectorAll('.menu-con.hien-thi').forEach(sub => {
+            sub.classList.remove('hien-thi');
+            sub.style.maxHeight = '0';
+            sub.closest('.co-menu-con')?.classList.remove('active');
+        });
+    }
+});
+
+// === Modal & Toast ===
+function openModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('hien-thi'), 10);
+    }
+}
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('hien-thi');
+        modal.addEventListener('transitionend', function handler() {
+            if (!modal.classList.contains('hien-thi')) modal.style.display = 'none';
+            modal.removeEventListener('transitionend', handler);
+        });
+    }
+}
+function showToast(message, type = 'thanh-cong', duration = 3000) {
+    const toast = document.getElementById('toastNotification');
+    const msg = document.getElementById('toastMessage');
+    msg.textContent = message;
+    toast.className = 'thong-bao-nho hien-thi ' + type;
+    setTimeout(() => {
+        toast.classList.remove('hien-thi', 'thanh-cong', 'that-bai');
+    }, duration);
+}
+
+// === Load bài viết từ MockAPI ===
+async function loadPosts() {
+    try {
+        const res = await fetch(API_URL);
+        const posts = await res.json();
+        renderPosts(posts);
+    } catch (err) {
+        showToast("Lỗi tải dữ liệu!", "that-bai");
+    }
+}
+
+function renderPosts(posts) {
+    const tbody = document.getElementById('postTableBody');
+    tbody.innerHTML = '';
+    posts.forEach((post, index) => {
+        const row = `<tr>
+            <td>${index + 1}</td>
+            <td>${post.title1}</td>
+            <td>${post.desc}</td>
+            <td><img src="${post.image}" alt="Ảnh bài viết" loading="lazy" width="80"></td>
+            <td class="cot-thao-tac">
+                <button class="nut-thao-tac nut-sua" onclick="editPost('${post.id}')"><i class="fa-solid fa-pen"></i></button>
+                <button class="nut-thao-tac nut-xoa" onclick="confirmDelete('${post.id}')"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+    document.getElementById('searchResultStatus').style.display = 'none';
+}
+
+// === Thêm bài viết ===
+async function submitAddPost() {
+    const title1 = document.getElementById('addTitle').value.trim();
+    const desc = document.getElementById('addDesc').value.trim();
+    const imageInput = document.getElementById('addPostImage');
+
+    if (!title1 || !desc) {
+        showToast("Vui lòng điền đủ!", "that-bai");
+        return;
+    }
+
+    let image = "https://via.placeholder.com/80";
+    if (imageInput.files[0]) {
+        image = URL.createObjectURL(imageInput.files[0]);
+    }
+
+    await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title1, desc, image })
+    });
+
+    closeModal('modalAddPost');
+    showToast("Thêm bài viết thành công!");
+    loadPosts();
+}
+
+// === Sửa bài viết ===
+async function editPost(id) {
+    currentEditingId = id;
+    const res = await fetch(`${API_URL}/${id}`);
+    const post = await res.json();
+
+    document.getElementById('editTitle').value = post.title1;
+    document.getElementById('editDesc').value = post.desc;
+    document.getElementById('editPostImage').value = '';
+    openModal('modalEditPost');
+}
+
+async function submitEditPost() {
+    if (!currentEditingId) return;
+
+    const title1 = document.getElementById('editTitle').value.trim();
+    const desc = document.getElementById('editDesc').value.trim();
+    const imageInput = document.getElementById('editPostImage');
+
+    if (!title1 || !desc) {
+        showToast("Vui lòng điền đầy đủ!", "that-bai");
+        return;
+    }
+
+    const updateData = { title1, desc };
+    if (imageInput.files[0]) {
+        updateData.image = URL.createObjectURL(imageInput.files[0]);
+    }
+
+    await fetch(`${API_URL}/${currentEditingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updateData)
+    });
+
+    closeModal('modalEditPost');
+    showToast("Cập nhật thành công!");
+    loadPosts();
+    currentEditingId = null;
+}
+
+// === Xoá bài viết ===
+function confirmDelete(id) {
+    deletePostId = id;
+    openModal('modalConfirmDelete');
+}
+async function deletePost() {
+    await fetch(`${API_URL}/${deletePostId}`, {
+        method: "DELETE"
+    });
+    closeModal('modalConfirmDelete');
+    showToast("Đã xóa bài viết!");
+    loadPosts();
+}
+
+// === Tìm kiếm bài viết ===
+async function searchPosts() {
+    const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+    const res = await fetch(API_URL);
+    const posts = await res.json();
+    const filtered = posts.filter(p => p.title1.toLowerCase().includes(keyword));
+
+    renderPosts(filtered);
+    document.getElementById('searchResultStatus').style.display = filtered.length === 0 ? 'block' : 'none';
+}
+
+// === Load khi trang sẵn sàng ===
+window.onload = loadPosts;
+</script>
+
+</body>
+</html>

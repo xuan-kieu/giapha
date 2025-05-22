@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý thành viên - Gia Phả Đại Việt</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/chung.css">
+    <link rel="stylesheet" href="css/quanlythanhvien.css">
+
+</head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben" id="thanhBen">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <button class="nut-hamburger" onclick="toggleMobileMenu()" aria-label="Mở/đóng menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav id="menuDieuHuong">
+                    <ul>
+                        <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaHe')" role="button" aria-expanded="false">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaHe">
+                                <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                                <li><a href="caygiapha.html">Cây gia phả</a></li>
+                            </ul>
+                        </li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaKy')" role="button" aria-expanded="false">Phả ký <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaKy">
+                                <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                                <li><a href="lichsu.html">Lịch sử</a></li>
+                                <li><a href="totien.html">Tổ tiên</a></li>
+                                <li><a href="truyenthong.html">Truyền thống</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="congduc.html">Công đức</a></li>
+                        <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                        <li><a href="hinhanh.html">Hình ảnh</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="Ảnh đại diện">
+                    <div class="thong-tin">
+                        <strong>user</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Quản lý thành viên</h1>
+            </div>
+
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="openAddMemberModal()">
+                    <i class="fa-solid fa-plus"></i> Thêm thành viên
+                </button>
+                <div class="khung-tim-kiem">
+                    <input type="text" class="input-tim-kiem" placeholder="Nhập ID hoặc Tên" id="searchInput">
+                    <button class="nut-tim-kiem" onclick="searchMembers()">Tìm kiếm</button>
+                </div>
+                <div id="noResultsMessage" class="thong-bao-loi">Không tìm thấy kết quả</div>
+            </div>
+
+            <div class="khung-bang">
+                <table class="bang-chung">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastNotification" class="thong-bao-nho">
+        <i class="fa-solid" id="toastIcon"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+
+    <div id="addMemberModal" class="modal">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeAddMemberModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Thêm thành viên</h2>
+            <input type="text" class="input-truong" placeholder="ID" id="addMemberId">
+            <input type="text" class="input-truong" placeholder="Tên" id="addMemberName">
+            <input type="email" class="input-truong" placeholder="Email" id="addMemberEmail">
+            <select class="input-truong" id="addMemberRole">
+                <option value="Admin">Admin</option>
+                <option value="Người dùng">Người dùng</option>
+            </select>
+            <select class="input-truong" id="addMemberStatus">
+                <option value="Sống">Sống</option>
+                <option value="Đã mất">Đã mất</option>
+            </select>
+            <button class="nut-bam" onclick="addMember()">Xác nhận</button>
+        </div>
+    </div>
+
+    <div id="editMemberModal" class="modal">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeEditMemberModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Cập nhật thành viên</h2>
+            <input type="text" class="input-truong" placeholder="ID" id="editMemberId" readonly>
+            <input type="text" class="input-truong" placeholder="Tên" id="editMemberName">
+            <input type="email" class="input-truong" placeholder="Email" id="editMemberEmail">
+            <select class="input-truong" id="editMemberRole">
+                <option value="Admin">Admin</option>
+                <option value="Người dùng">Người dùng</option>
+            </select>
+            <select class="input-truong" id="editMemberStatus">
+                <option value="Sống">Sống</option>
+                <option value="Đã mất">Đã mất</option>
+            </select>
+            <button class="nut-bam" onclick="updateMember()">Xác nhận</button>
+        </div>
+    </div>
+
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-noi-dung modal-confirm">
+            <button class="nut-dong-modal" onclick="closeDeleteConfirmModal()"><i class="fa-solid fa-xmark"></i></button>
+            <p>Bạn có chắc muốn xóa thành viên này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-bam nut-xoa-confirm" onclick="confirmDeleteMember()">Xóa</button>
+                <button class="nut-bam nut-huy-confirm" onclick="closeDeleteConfirmModal()">Hủy</button>
+            </div>
+        </div>
+    </div>
+<script>
+const API_URL = "https://682ed083746f8ca4a47e6bb5.mockapi.io/user"; // 🔁 Thay bằng URL thật
+let memberToDeleteId = null;
+let currentUserRole = 'Admin'; // Hoặc 'Người dùng'
+
+// ===== SIDEBAR & DROPDOWN =====
+function toggleDropdown() {
+    const box = document.getElementById("userDropdown");
+    box.classList.toggle("hien-thi");
+    const userArea = document.querySelector('.khu-vuc-ngu-dung');
+    if (userArea) userArea.setAttribute('aria-expanded', box.classList.contains("hien-thi"));
+}
+function toggleSubmenu(id) {
+    const menu = document.getElementById(id);
+    const parentSpan = menu.previousElementSibling;
+    const isExpanded = parentSpan.getAttribute('aria-expanded') === 'true';
+    menu.classList.toggle("hien-thi");
+    parentSpan.setAttribute('aria-expanded', !isExpanded);
+}
+function logout() {
+    window.location.href = "dangnhap.html";
+}
+function toggleMobileMenu() {
+    const menu = document.getElementById("menuDieuHuong");
+    const sidebar = document.getElementById("thanhBen");
+    menu.classList.toggle("hien-thi");
+    sidebar.classList.toggle("menu-mo");
+    document.querySelector('.nut-hamburger').setAttribute('aria-expanded', menu.classList.contains("hien-thi"));
+}
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('thanhBen');
+    const menu = document.getElementById('menuDieuHuong');
+    const hamburger = document.querySelector('.nut-hamburger');
+    const dropdown = document.getElementById('userDropdown');
+    const userArea = document.querySelector('.khu-vuc-ngu-dung');
+
+    if (!sidebar.contains(event.target) && !hamburger.contains(event.target) && menu.classList.contains("hien-thi")) {
+        menu.classList.remove("hien-thi");
+        sidebar.classList.remove("menu-mo");
+        hamburger.setAttribute("aria-expanded", "false");
+    }
+
+    if (dropdown.classList.contains("hien-thi") && !userArea.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.remove("hien-thi");
+        userArea.setAttribute("aria-expanded", "false");
+    }
+
+    document.querySelectorAll('.co-menu-con span[aria-expanded="true"]').forEach(span => {
+        const submenu = span.nextElementSibling;
+        if (!submenu.contains(event.target) && !span.contains(event.target)) {
+            submenu.classList.remove("hien-thi");
+            span.setAttribute("aria-expanded", "false");
+        }
+    });
+});
+
+// ===== TOAST =====
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toastNotification');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastMessage = document.getElementById('toastMessage');
+
+    toast.classList.remove('thanh-cong', 'that-bai', 'hien-thi');
+    toastIcon.className = 'fa-solid';
+    toastMessage.textContent = message;
+
+    if (type === 'success') {
+        toast.classList.add('thanh-cong');
+        toastIcon.classList.add('fa-check-circle');
+    } else {
+        toast.classList.add('that-bai');
+        toastIcon.classList.add('fa-xmark-circle');
+    }
+
+    toast.classList.add('hien-thi');
+    setTimeout(() => toast.classList.remove('hien-thi'), 3000);
+}
+
+// ===== MODALS =====
+function openModal(id) {
+    document.getElementById(id).classList.add('hien-thi');
+}
+function closeModal(id) {
+    document.getElementById(id).classList.remove('hien-thi');
+}
+function openAddMemberModal() {
+    document.getElementById('addMemberId').value = '';
+    document.getElementById('addMemberName').value = '';
+    document.getElementById('addMemberEmail').value = '';
+    document.getElementById('addMemberRole').value = 'Người dùng';
+    document.getElementById('addMemberStatus').value = 'Sống';
+    openModal('addMemberModal');
+}
+function closeAddMemberModal() {
+    closeModal('addMemberModal');
+}
+function closeEditMemberModal() {
+    closeModal('editMemberModal');
+}
+function openDeleteConfirmModal(id) {
+    memberToDeleteId = id;
+    openModal('deleteConfirmModal');
+}
+function closeDeleteConfirmModal() {
+    closeModal('deleteConfirmModal');
+    memberToDeleteId = null;
+}
+
+// ===== MOCKAPI - CRUD =====
+async function fetchMembers() {
+    const res = await fetch(API_URL);
+    return await res.json();
+}
+async function renderMembersTable(data = null) {
+    const tableBody = document.getElementById('memberTableBody');
+    tableBody.innerHTML = '';
+    const noResultsMessage = document.getElementById('noResultsMessage');
+
+    const members = data || await fetchMembers();
+    noResultsMessage.style.display = members.length === 0 ? 'block' : 'none';
+
+    members.forEach(member => {
+        const row = `
+            <tr>
+                <td>${member.id}</td>
+                <td>${member.name}</td>
+                <td>${member.email}</td>
+                <td>${member.role}</td>
+                <td>${member.status}</td>
+                <td>
+                    <button onclick="openEditMemberModal('${member.id}')"><i class="fa fa-pen-to-square"></i></button>
+                    <button onclick="openDeleteConfirmModal('${member.id}')"><i class="fa fa-trash-can"></i></button>
+                </td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+}
+async function addMember() {
+    const member = {
+        id: document.getElementById('addMemberId').value.trim(),
+        name: document.getElementById('addMemberName').value.trim(),
+        email: document.getElementById('addMemberEmail').value.trim(),
+        role: document.getElementById('addMemberRole').value,
+        status: document.getElementById('addMemberStatus').value
+    };
+
+    if (!member.id || !member.name || !member.email || !/\S+@\S+\.\S+/.test(member.email)) {
+        showToast("Vui lòng nhập thông tin hợp lệ!", "error");
+        return;
+    }
+
+    await fetch(API_URL, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(member)
+    });
+
+    closeAddMemberModal();
+    showToast("Thêm thành viên thành công!");
+    renderMembersTable();
+}
+async function openEditMemberModal(id) {
+    const res = await fetch(`${API_URL}/${id}`);
+    const member = await res.json();
+
+    document.getElementById('editMemberId').value = member.id;
+    document.getElementById('editMemberId').setAttribute('data-original-id', member.id);
+    document.getElementById('editMemberName').value = member.name;
+    document.getElementById('editMemberEmail').value = member.email;
+    document.getElementById('editMemberRole').value = member.role;
+    document.getElementById('editMemberStatus').value = member.status;
+
+    openModal('editMemberModal');
+}
+async function updateMember() {
+    const originalId = document.getElementById('editMemberId').getAttribute('data-original-id');
+    const member = {
+        id: document.getElementById('editMemberId').value.trim(),
+        name: document.getElementById('editMemberName').value.trim(),
+        email: document.getElementById('editMemberEmail').value.trim(),
+        role: document.getElementById('editMemberRole').value,
+        status: document.getElementById('editMemberStatus').value
+    };
+
+    if (!member.name || !member.email) {
+        showToast("Vui lòng điền thông tin hợp lệ!", "error");
+        return;
+    }
+
+    await fetch(`${API_URL}/${originalId}`, {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(member)
+    });
+
+    closeEditMemberModal();
+    showToast("Cập nhật thành viên thành công!");
+    renderMembersTable();
+}
+async function confirmDeleteMember() {
+    if (!memberToDeleteId) {
+        showToast("Không có thành viên để xóa!", "error");
+        return;
+    }
+    await fetch(`${API_URL}/${memberToDeleteId}`, { method: "DELETE" });
+    closeDeleteConfirmModal();
+    showToast("Đã xóa thành viên!");
+    renderMembersTable();
+}
+async function searchMembers() {
+    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+    const all = await fetchMembers();
+    const result = all.filter(m =>
+        m.id.toLowerCase().includes(keyword) ||
+        m.name.toLowerCase().includes(keyword)
+    );
+    renderMembersTable(result);
+}
+
+// ===== INIT =====
+document.addEventListener("DOMContentLoaded", () => {
+    renderMembersTable();
+});
+</script>
+
+</body>
+</html>

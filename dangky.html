@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng ký - Gia Phả Đại Việt</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/chung.css" />
+  <link rel="stylesheet" href="css/dangky.css" />
+</head>
+<body>
+  <div class="trang-dang-ky-khung">
+    <div class="khung-trai">
+      <h1>Gia Phả<br />Đại Việt</h1>
+    </div>
+    <div class="khung-phai">
+      <div class="the-dang-ky">
+        <h2>Đăng ký tạo tài khoản</h2>
+        <input type="text" class="input-truong" id="reg-username" placeholder="Tên người dùng" required />
+        <input type="email" class="input-truong" id="reg-email" placeholder="Email" required />
+        <input type="password" class="input-truong" id="reg-password" placeholder="Mật khẩu" required />
+        <input type="password" class="input-truong" id="reg-confirm" placeholder="Xác nhận mật khẩu" required />
+        <div class="thong-bao-loi" id="regError" style="display: none;"></div>
+        <button class="nut-bam" onclick="register()">Xác nhận</button>
+        <div class="chu-dang-nhap">
+          Bạn đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ACCOUNTS_ENDPOINT = 'https://682ed083746f8ca4a47e6bb5.mockapi.io/user';
+
+    async function register() {
+      const username = document.getElementById('reg-username').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+      const confirm = document.getElementById('reg-confirm').value.trim();
+      const errorBox = document.getElementById('regError');
+
+      errorBox.style.display = 'none';
+      errorBox.textContent = '';
+
+      if (!username || !email || !password || !confirm) {
+        showError('Vui lòng điền đầy đủ các trường yêu cầu.');
+        return;
+      }
+
+      if (password !== confirm) {
+        showError('Mật khẩu và xác nhận mật khẩu không khớp.');
+        return;
+      }
+
+      try {
+        const response = await fetch(ACCOUNTS_ENDPOINT);
+        if (!response.ok) throw new Error(`Không thể tải dữ liệu tài khoản (${response.status})`);
+        const accounts = await response.json();
+
+        const emailExists = accounts.some(acc => acc.email === email);
+        if (emailExists) {
+          showError('Email này đã được đăng ký.');
+          return;
+        }
+
+        const usernameExists = accounts.some(acc => acc.username === username);
+        if (usernameExists) {
+          showError('Tên người dùng đã tồn tại.');
+          return;
+        }
+
+        const newUser = {
+          username,
+          email,
+          password,
+          role: 'member'
+        };
+
+        const createRes = await fetch(ACCOUNTS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newUser)
+        });
+
+        if (!createRes.ok) throw new Error(`Lỗi khi tạo tài khoản (${createRes.status})`);
+        const result = await createRes.json();
+
+        alert(`Đăng ký thành công! Chào mừng ${result.username}.`);
+        window.location.href = 'dangnhap.html';
+      } catch (err) {
+        showError(`Đã xảy ra lỗi: ${err.message}`);
+        console.error('Lỗi đăng ký:', err);
+      }
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

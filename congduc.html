@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công đức - Gia Phả Đại Việt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/chung.css">
+    </head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben" id="thanhBen">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <button class="nut-hamburger" onclick="toggleMobileMenu()" aria-label="Mở/đóng menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav id="menuDieuHuong">
+                    <ul>
+                        <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaHe')" role="button" aria-expanded="false">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaHe">
+                                <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                                <li><a href="caygiapha.html">Cây gia phả</a></li>
+                            </ul>
+                        </li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaKy')" role="button" aria-expanded="false">Phả ký <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaKy">
+                                <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                                <li><a href="lichsu.html">Lịch sử</a></li>
+                                <li><a href="totien.html">Tổ tiên</a></li>
+                                <li><a href="truyenthong.html">Truyền thống</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="congduc.html">Công đức</a></li>
+                        <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                        <li><a href="hinhanh.html">Hình ảnh</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="Ảnh đại diện">
+                    <div class="thong-tin">
+                        <strong>User</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Quản lý sự kiện công đức</h1>
+            </div>
+
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="openAddEventModal()">
+                    <i class="fa-solid fa-plus"></i> Thêm sự kiện
+                </button>
+                <div class="khung-tim-kiem">
+                    <input type="text" class="input-tim-kiem" placeholder="Nhập tên sự kiện" id="searchInput">
+                    <button class="nut-tim-kiem" onclick="searchEvents()">Tìm kiếm</button>
+                </div>
+                <div id="noResultsMessage" class="thong-bao-loi">Không tìm thấy kết quả</div>
+            </div>
+
+            <div class="khung-bang">
+                <table class="bang-chung">
+                    <thead>
+                        <tr>
+                            <th>Tên sự kiện</th>
+                            <th>Thời gian</th>
+                            <th>Số tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="addEditEventModal" class="modal">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeAddEditEventModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="modalTitle">Thêm sự kiện công đức</h2>
+            <input type="text" class="input-truong" placeholder="Tên sự kiện" id="eventName">
+            <input type="date" class="input-truong" placeholder="Ngày diễn ra" id="eventDate">
+            <input type="number" class="input-truong" placeholder="Số tiền mục tiêu (VNĐ)" id="eventAmount">
+            <select class="input-truong" id="eventStatus">
+                <option value="Đang diễn ra">Đang diễn ra</option>
+                <option value="Đã kết thúc">Đã kết thúc</option>
+            </select>
+            <button class="nut-bam" onclick="confirmAddOrUpdateEvent()">Xác nhận</button>
+        </div>
+    </div>
+
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-noi-dung modal-confirm">
+            <button class="nut-dong-modal" onclick="closeDeleteConfirmModal()"><i class="fa-solid fa-xmark"></i></button>
+            <p>Bạn có chắc muốn xóa sự kiện này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-bam nut-xoa-confirm" onclick="confirmDeleteEvent()">Xóa</button>
+                <button class="nut-bam nut-huy-confirm" onclick="closeDeleteConfirmModal()">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastNotification" class="thong-bao-nho">
+        <i class="fa-solid" id="toastIcon"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+<script>
+const API_URL = 'https://682ed083746f8ca4a47e6bb5.mockapi.io/user'; // Đổi thành URL thực của bạn
+
+let currentEditingEventId = null;
+let eventToDeleteId = null;
+
+// --- Sidebar, dropdown, toast như cũ -- giữ nguyên các function toggle, logout, showToast ---
+
+// --- Hàm hiển thị bảng ---
+async function renderEventsTable(data = null) {
+    const tableBody = document.getElementById('eventTableBody');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    tableBody.innerHTML = '';
+
+    if (!data) {
+        const res = await fetch(API_URL);
+        data = await res.json();
+    }
+
+    if (data.length === 0) {
+        noResultsMessage.style.display = 'block';
+        return;
+    } else {
+        noResultsMessage.style.display = 'none';
+    }
+
+    data.forEach(event => {
+        const row = `
+            <tr>
+                <td>${event.congduc_name}</td>
+                <td>${new Date(event.congduc_date).toLocaleDateString()}</td>
+                <td>${Number(event.congduc_amount).toLocaleString('vi-VN')}đ</td>
+                <td>${event.congduc_status}</td>
+                <td class="cot-thao-tac">
+                    <button class="nut-thao-tac nut-sua" onclick="openEditEventModal('${event.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="nut-thao-tac nut-xoa" onclick="openDeleteConfirmModal('${event.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                </td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+}
+
+// --- Modal Add/Edit ---
+function openAddEventModal() {
+    document.getElementById('modalTitle').innerText = 'Thêm sự kiện công đức';
+    document.getElementById('eventName').value = '';
+    document.getElementById('eventDate').value = '';
+    document.getElementById('eventAmount').value = '';
+    document.getElementById('eventStatus').value = 'Đang diễn ra';
+    currentEditingEventId = null;
+    document.getElementById('addEditEventModal').classList.add('hien-thi');
+}
+
+async function openEditEventModal(id) {
+    const res = await fetch(`${API_URL}/${id}`);
+    const event = await res.json();
+    document.getElementById('modalTitle').innerText = 'Chỉnh sửa sự kiện công đức';
+    document.getElementById('eventName').value = event.congduc_name;
+    document.getElementById('eventDate').value = event.congduc_date;
+    document.getElementById('eventAmount').value = event.congduc_amount;
+    document.getElementById('eventStatus').value = event.congduc_status;
+    currentEditingEventId = id;
+    document.getElementById('addEditEventModal').classList.add('hien-thi');
+}
+
+function closeAddEditEventModal() {
+    document.getElementById('addEditEventModal').classList.remove('hien-thi');
+}
+
+async function confirmAddOrUpdateEvent() {
+    const name = document.getElementById('eventName').value.trim();
+    const date = document.getElementById('eventDate').value;
+    const amount = parseInt(document.getElementById('eventAmount').value);
+    const status = document.getElementById('eventStatus').value;
+
+    if (!name || !date || isNaN(amount) || amount <= 0 || !status) {
+        showToast('Vui lòng điền đầy đủ thông tin!', 'error');
+        return;
+    }
+
+    const eventData = {
+        congduc_name: name,
+        congduc_date: date,
+        congduc_amount: amount,
+        congduc_status: status
+    };
+
+    if (currentEditingEventId) {
+        await fetch(`${API_URL}/${currentEditingEventId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData)
+        });
+        showToast('Cập nhật thành công!');
+    } else {
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData)
+        });
+        showToast('Thêm thành công!');
+    }
+
+    closeAddEditEventModal();
+    renderEventsTable();
+}
+
+// --- Modal Delete ---
+function openDeleteConfirmModal(id) {
+    eventToDeleteId = id;
+    document.getElementById('deleteConfirmModal').classList.add('hien-thi');
+}
+
+function closeDeleteConfirmModal() {
+    eventToDeleteId = null;
+    document.getElementById('deleteConfirmModal').classList.remove('hien-thi');
+}
+
+async function confirmDeleteEvent() {
+    if (eventToDeleteId) {
+        await fetch(`${API_URL}/${eventToDeleteId}`, { method: 'DELETE' });
+        showToast('Xóa sự kiện thành công!');
+        renderEventsTable();
+        closeDeleteConfirmModal();
+    }
+}
+
+// --- Tìm kiếm ---
+async function searchEvents() {
+    const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const filtered = data.filter(e => 
+        e.congduc_name.toLowerCase().includes(keyword) || 
+        (e.congduc_id && e.congduc_id.toLowerCase().includes(keyword))
+    );
+    renderEventsTable(filtered);
+}
+
+// --- Khởi tạo ---
+document.addEventListener('DOMContentLoaded', () => {
+    renderEventsTable();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+/* DUAN/css/trangcanhan.css - Phiên bản Đã kiểm tra lại kỹ càng */
+
+/*
+   File này chỉ chứa các style đặc trưng riêng cho trang cá nhân
+   và các điều chỉnh responsive cụ thể cho bố cục trang cá nhân
+   mà không thể nằm trong chung.css.
+   Hầu hết các style đã được định nghĩa trong chung.css.
+*/
+
+@media (max-width: 768px) {
+    .menu-tha-xuong {
+        bottom: unset;
+        top: 50px;
+        right: 0;
+        left: unset;
+        width: 150px;
+    }
+
+    .noi-dung-chinh {
+        padding: var(--khoang-cach-vua);
+        width: 100%;
+    }
+
+    .hop-thong-tin-ca-nhan {
+        width: 100%;
+        padding: var(--khoang-cach-vua);
+        border-radius: var(--bo-goc-nho);
+    }
+}
+
+@media (max-width: 480px) {
+    .thanh-ben {
+        padding: var(--khoang-cach-nho);
+    }
+    .thanh-ben h2 {
+        font-size: 18px;
+    }
+    .thanh-ben nav {
+        top: 50px;
+    }
+    .noi-dung-chinh {
+        padding: var(--khoang-cach-nho);
+    }
+    .hop-thong-tin-ca-nhan {
+        padding: var(--khoang-cach-nho);
+    }
+}

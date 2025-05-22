@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập - Gia Phả Đại Việt</title>
+
+    <link rel="stylesheet" href="css/chung.css" />
+    <link rel="stylesheet" href="css/dangnhap.css" />
+</head>
+<body>
+    <div class="trang-dang-nhap-khung">
+        <div class="khung-trai">
+            <h1>Gia Phả<br />Đại Việt</h1>
+        </div>
+
+        <div class="khung-phai">
+            <div class="the-dang-nhap">
+                <h2>Đăng nhập vào hệ thống</h2>
+                <input type="text" class="input-truong" id="username" placeholder="Email hoặc tên người dùng" />
+                <input type="password" class="input-truong" id="password" placeholder="Mật khẩu" />
+                <a href="quenmatkhau.html" class="link-quen-mat-khau">Quên mật khẩu?</a>
+                <div class="thong-bao-loi" id="loginError" style="display: none;"></div>
+                <button class="nut-bam" onclick="login()">Đăng nhập</button>
+                <div class="chu-dang-ky">Bạn chưa có tài khoản? <a href="dangky.html">Đăng ký</a></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL tài nguyên người dùng của bạn từ MockAPI.io
+        const USERS_API_URL = 'https://682ed083746f8ca4a47e6bb5.mockapi.io/user';
+
+        async function login() {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginError = document.getElementById('loginError');
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            loginError.style.display = 'none'; // Ẩn thông báo lỗi trước mỗi lần đăng nhập
+            loginError.textContent = ''; // Xóa nội dung lỗi cũ
+
+            if (!username || !password) {
+                loginError.textContent = 'Vui lòng nhập tên người dùng/email và mật khẩu.';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Gửi yêu cầu GET tới MockAPI.io để tìm người dùng theo email
+                // MockAPI.io tự động lọc nếu bạn thêm "?email=..."
+                const response = await fetch(`${USERS_API_URL}?email=${username}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP: ${response.status}`);
+                }
+                
+                const users = await response.json();
+
+                // Kiểm tra xem có người dùng nào khớp không và mật khẩu có đúng không
+                if (users.length === 0 || users[0].password !== password) {
+                    loginError.textContent = 'Tên người dùng hoặc mật khẩu không đúng.';
+                    loginError.style.display = 'block';
+                    return;
+                }
+
+                const user = users[0]; // Lấy đối tượng người dùng đầu tiên tìm thấy
+
+                // Đăng nhập thành công: Lưu thông tin vào localStorage và chuyển hướng
+                localStorage.setItem('userRole', user.role); // Lưu vai trò (admin, editor, member)
+                localStorage.setItem('loggedInUserId', user.id); // Lưu ID của người dùng từ MockAPI.io
+                localStorage.setItem('loggedInUserEmail', user.email); // Lưu email của người dùng
+
+                window.location.href = 'trangcanhan.html'; // Chuyển hướng đến trang cá nhân
+
+            } catch (error) {
+                console.error('Đã xảy ra lỗi khi đăng nhập:', error);
+                loginError.textContent = 'Đã xảy ra lỗi khi kết nối. Vui lòng thử lại.';
+                loginError.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

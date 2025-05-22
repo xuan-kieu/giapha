@@ -1,0 +1,16 @@
+.bang-quan-ly-thanh-vien {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin-top: 20px;
+}
+.bang-thanh-vien {
+    width: 100%;
+    border-collapse: collapse;
+}
+.bang-thanh-vien th, .bang-thanh-vien td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+/* ... và rất nhiều class khác cho nút, modal, input, v.v. */

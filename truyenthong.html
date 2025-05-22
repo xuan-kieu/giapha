@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truyền thống - Gia Phả Đại Việt</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/chung.css">
+</head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben" id="thanhBen">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <button class="nut-hamburger" onclick="toggleMobileMenu()" aria-label="Mở/đóng menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav id="menuDieuHuong">
+                    <ul>
+                        <li><a href="trangcanhan.html">Trang cá nhân</a></li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaHe')" role="button" aria-expanded="false">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con" id="menuConPhaHe">
+                                <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                                <li><a href="caygiapha.html">Cây gia phả</a></li>
+                            </ul>
+                        </li>
+                        <li class="co-menu-con">
+                            <span onclick="toggleSubmenu('menuConPhaKy')" role="button" aria-expanded="true">Phả ký <span class="mui-ten">&#9662;</span></span>
+                            <ul class="menu-con hien-thi" id="menuConPhaKy">
+                                <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                                <li><a href="lichsu.html">Lịch sử</a></li>
+                                <li><a href="totien.html">Tổ tiên</a></li>
+                                <li><a href="truyenthong.html">Truyền thống</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="congduc.html">Công đức</a></li>
+                        <li><a href="ngoaipha.html">Ngoại phả</a></li>
+                        <li><a href="hinhanh.html">Hình ảnh</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="Ảnh đại diện"> <div class="thong-tin">
+                        <strong>user</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Truyền thống</h1>
+            </div>
+
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="moModalTruyenThong('them')">
+                    <i class="fa-solid fa-plus"></i> Thêm truyền thống
+                </button>
+                <div class="khung-tim-kiem">
+                    <input type="text" class="input-tim-kiem" id="inputTimTruyenThong" placeholder="Nhập ID hoặc Tên truyền thống...">
+                    <button class="nut-tim-kiem" onclick="timTruyenThong()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm
+                    </button>
+                </div>
+            </div>
+
+            <div id="trangThaiKetQuaTimKiem" class="thong-bao-loi" style="display: none;">Không tìm thấy kết quả nào.</div>
+
+            <div class="khung-bang">
+                <table class="bang-chung">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Mô tả</th>
+                            <th class="cot-thao-tac">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="noiDungBangTruyenThong">
+                        </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="toastNotification" class="thong-bao-nho">
+        <i class="fa-solid" id="toastIcon"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <div id="modalTruyenThong" class="modal">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="dongModalTruyenThong()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="tieuDeModal">Thêm Truyền thống mới</h2>
+            <form id="formTruyenThong">
+                <input type="hidden" id="idTruyenThong">
+                <input type="text" id="tenTruyenThong" class="input-truong" placeholder="Tên Truyền thống" required>
+                <textarea id="moTaTruyenThong" class="input-truong" placeholder="Mô tả"></textarea>
+                <div class="modal-buttons">
+                    <button type="submit" class="nut-bam" id="nutSubmitModal">Thêm Truyền thống</button>
+                    <button type="button" class="nut-huy-confirm" onclick="dongModalTruyenThong()">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalXacNhanXoa" class="modal">
+        <div class="modal-noi-dung modal-confirm">
+            <button class="nut-dong-modal" onclick="dongModalXacNhanXoa()"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Xác nhận xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa truyền thống này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-bam nut-xoa-confirm" id="nutXacNhanXoa">Xóa</button>
+                <button class="nut-huy-confirm" onclick="dongModalXacNhanXoa()">Hủy</button>
+            </div>
+        </div>
+    </div>
+<script>
+    const API_URL = 'https://682ed083746f8ca4a47e6bb5.mockapi.io/user'; // 🔁 Đổi thành endpoint của bạn
+    let idDangXoa = null;
+
+    // ========== Sidebar & Dropdown ==========
+    function toggleDropdown() {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.toggle('hien-thi');
+        document.querySelector('.khu-vuc-ngu-dung').setAttribute('aria-expanded', dropdown.classList.contains('hien-thi'));
+    }
+
+    function logout() {
+        alert('Đăng xuất thành công!');
+        window.location.href = 'dangnhap.html';
+    }
+
+    function toggleSubmenu(id) {
+        const submenu = document.getElementById(id);
+        submenu.classList.toggle('hien-thi');
+        submenu.previousElementSibling.setAttribute('aria-expanded', submenu.classList.contains('hien-thi'));
+    }
+
+    function toggleMobileMenu() {
+        document.getElementById('menuDieuHuong').classList.toggle('hien-thi');
+        document.getElementById('thanhBen').classList.toggle('menu-mo');
+    }
+
+    window.onclick = function (event) {
+        if (!event.target.closest('.khu-vuc-ngu-dung')) {
+            document.querySelectorAll('.menu-tha-xuong.hien-thi').forEach(el => el.classList.remove('hien-thi'));
+        }
+        if (event.target.classList.contains('modal')) {
+            dongModalTruyenThong();
+            dongModalXacNhanXoa();
+        }
+    };
+
+    // ========== Toast ==========
+    function hienThiToast(message, type = 'thanh-cong') {
+        const toast = document.getElementById('toastNotification');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastIcon = document.getElementById('toastIcon');
+
+        toastMessage.textContent = message;
+        toast.className = 'thong-bao-nho hien-thi';
+        toastIcon.className = 'fa-solid ' + (type === 'thanh-cong' ? 'fa-check-circle' : 'fa-times-circle');
+
+        setTimeout(() => {
+            toast.classList.remove('hien-thi', 'thanh-cong', 'that-bai');
+        }, 3000);
+    }
+
+    // ========== Modal ==========
+    const modalTruyenThong = document.getElementById('modalTruyenThong');
+    const form = document.getElementById('formTruyenThong');
+    const tieuDeModal = document.getElementById('tieuDeModal');
+    const idInput = document.getElementById('idTruyenThong');
+    const nameInput = document.getElementById('tenTruyenThong');
+    const desInput = document.getElementById('moTaTruyenThong');
+    const submitBtn = document.getElementById('nutSubmitModal');
+
+    function moModalTruyenThong(action, id = null) {
+        modalTruyenThong.classList.add('hien-thi');
+        form.reset();
+        if (action === 'them') {
+            tieuDeModal.textContent = 'Thêm Truyền thống mới';
+            submitBtn.textContent = 'Thêm Truyền thống';
+            idInput.value = '';
+        } else {
+            tieuDeModal.textContent = 'Chỉnh sửa Truyền thống';
+            submitBtn.textContent = 'Lưu thay đổi';
+            fetch(`${API_URL}/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    idInput.value = data.id;
+                    nameInput.value = data.truyenthong_name;
+                    desInput.value = data.truyenthong_des;
+                })
+                .catch(() => hienThiToast('Không tìm thấy dữ liệu!', 'that-bai'));
+        }
+    }
+
+    function dongModalTruyenThong() {
+        modalTruyenThong.classList.remove('hien-thi');
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const id = idInput.value;
+        const name = nameInput.value.trim();
+        const des = desInput.value.trim();
+
+        if (!name) {
+            hienThiToast('Tên truyền thống không được để trống!', 'that-bai');
+            return;
+        }
+
+        const body = {
+            truyenthong_name: name,
+            truyenthong_des: des,
+            truyenthong_id: 'TT' + Date.now()
+        };
+
+        const url = id ? `${API_URL}/${id}` : API_URL;
+        const method = id ? 'PUT' : 'POST';
+
+        fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+            .then(res => res.json())
+            .then(() => {
+                hienThiToast(id ? 'Cập nhật thành công!' : 'Thêm mới thành công!');
+                dongModalTruyenThong();
+                taiDanhSachTruyenThong();
+            })
+            .catch(() => hienThiToast('Lỗi khi gửi dữ liệu!', 'that-bai'));
+    });
+
+    // ========== Xác nhận xóa ==========
+    const modalXacNhanXoa = document.getElementById('modalXacNhanXoa');
+    const nutXacNhanXoa = document.getElementById('nutXacNhanXoa');
+
+    function moModalXacNhanXoa(id) {
+        idTruyenThongDangXoa = id;
+        modalXacNhanXoa.classList.add('hien-thi');
+    }
+
+    function dongModalXacNhanXoa() {
+        idTruyenThongDangXoa = null;
+        modalXacNhanXoa.classList.remove('hien-thi');
+    }
+
+    nutXacNhanXoa.addEventListener('click', () => {
+        if (idTruyenThongDangXoa) {
+            fetch(`${API_URL}/${idTruyenThongDangXoa}`, { method: 'DELETE' })
+                .then(() => {
+                    hienThiToast('Đã xóa truyền thống!');
+                    taiDanhSachTruyenThong();
+                    dongModalXacNhanXoa();
+                })
+                .catch(() => hienThiToast('Xóa thất bại!', 'that-bai'));
+        }
+    });
+
+    // ========== Render bảng ==========
+    function renderDanhSachTruyenThong(data) {
+        const tbody = document.getElementById('noiDungBangTruyenThong');
+        const noti = document.getElementById('trangThaiKetQuaTimKiem');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            noti.style.display = 'block';
+            return;
+        }
+        noti.style.display = 'none';
+
+        data.forEach(item => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${item.truyenthong_id}</td>
+                <td>${item.truyenthong_name}</td>
+                <td>${item.truyenthong_des}</td>
+                <td class="cot-thao-tac">
+                    <button class="nut-thao-tac nut-sua" onclick="moModalTruyenThong('sua', '${item.id}')"><i class="fa-solid fa-pencil"></i> Sửa</button>
+                    <button class="nut-thao-tac nut-xoa" onclick="moModalXacNhanXoa('${item.id}')"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                </td>`;
+        });
+    }
+
+    // ========== Lấy danh sách từ API ==========
+    function taiDanhSachTruyenThong() {
+        fetch(API_URL)
+            .then(res => res.json())
+            .then(data => renderDanhSachTruyenThong(data))
+            .catch(() => hienThiToast('Lỗi tải dữ liệu!', 'that-bai'));
+    }
+
+    // ========== Tìm kiếm ==========
+    function timTruyenThong() {
+        const keyword = document.getElementById('inputTimTruyenThong').value.toLowerCase();
+        fetch(API_URL)
+            .then(res => res.json())
+            .then(data => {
+                const ketQua = data.filter(item =>
+                    item.truyenthong_id.toLowerCase().includes(keyword) ||
+                    item.truyenthong_name.toLowerCase().includes(keyword)
+                );
+                renderDanhSachTruyenThong(ketQua);
+            });
+    }
+
+    // ========== On Load ==========
+    document.addEventListener('DOMContentLoaded', taiDanhSachTruyenThong);
+</script>
+
+</body>
+</html>

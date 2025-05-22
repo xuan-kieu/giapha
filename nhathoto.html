@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhà Thờ Tổ - Gia Phả Đại Việt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/chung.css">
+</head>
+<body>
+    <div class="khung-trang">
+        <div class="thanh-ben">
+            <div>
+                <h2>Gia Phả Đại Việt</h2>
+                <ul>
+                    <li><a href="dashboard.html">Trang cá nhân</a></li>
+                    <li class="co-menu-con">
+                        <span onclick="toggleSubmenu('familySubmenu')">Phả hệ <span class="mui-ten">&#9662;</span></span>
+                        <ul class="menu-con" id="familySubmenu">
+                            <li><a href="quanlythanhvien.html">Quản lý thành viên</a></li>
+                            <li><a href="family-tree.html">Cây gia phả</a></li>
+                        </ul>
+                    </li>
+                    <li class="co-menu-con">
+                        <span onclick="toggleSubmenu('kySubmenu')">Phả ký <span class="mui-ten">&#9662;</span></span>
+                        <ul class="menu-con" id="kySubmenu">
+                            <li><a href="nhathoto.html">Nhà thờ tổ</a></li>
+                            <li><a href="lichsu.html">Lịch sử</a></li>
+                            <li><a href="totien.html">Tổ tiên</a></li>
+                            <li><a href="truyenthong.html">Truyền thống</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="cong-duc.html">Công đức</a></li>
+                    <li><a href="ngoai-pha.html">Ngoại phả</a></li>
+                    <li><a href="hinhanh.html">Hình ảnh</a></li>
+                </ul>
+            </div>
+            <div class="khu-vuc-ngu-dung" onclick="toggleDropdown()">
+                <div class="hop-nguoi-dung">
+                    <img src="assets/bg.jpg" alt="avatar">
+                    <div class="thong-tin">
+                        <strong>user</strong>
+                    </div>
+                </div>
+                <div class="menu-tha-xuong" id="userDropdown">
+                    <p onclick="logout()">Đăng xuất</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="noi-dung-chinh">
+            <div class="banner-tieu-de-trang">
+                <h1>Quản lý bài viết - Nhà Thờ Tổ</h1>
+            </div>
+            
+            <div class="khu-vuc-dieu-khien">
+                <button class="nut-bam-phu" onclick="openModal('modalAddPost')">
+                    <i class="fa-solid fa-plus"></i> Thêm bài viết
+                </button>
+                <div class="khung-tim-kiem">
+                    <input type="text" id="searchInput" class="input-tim-kiem" placeholder="Tìm kiếm bài viết theo tiêu đề...">
+                    <button class="nut-tim-kiem" onclick="searchPosts()"><i class="fa-solid fa-magnifying-glass"></i> Tìm</button>
+                </div>
+            </div>
+
+            <div class="khung-bang">
+                <table class="bang-chung" id="postTable">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Ngày đăng</th>
+                            <th>Người viết</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Tiêu đề">Lễ dựng miếu tổ</td>
+                            <td data-label="Ngày đăng">2025-05-13</td>
+                            <td data-label="Người viết">Admin</td>
+                            <td class="cot-thao-tac">
+                                <button class="nut-thao-tac nut-sua" onclick="editPost(this)"><i class="fa-solid fa-pen"></i></button>
+                                <button class="nut-thao-tac nut-xoa" onclick="confirmDelete(this)"><i class="fa-solid fa-trash"></i></button>
+                                <button class="nut-thao-tac" onclick="viewPost(this)"><i class="fa-solid fa-eye"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Tiêu đề">Quy định về việc bảo tồn nhà thờ tổ</td>
+                            <td data-label="Ngày đăng">2024-11-20</td>
+                            <td data-label="Người viết">Người kiểm duyệt</td>
+                            <td class="cot-thao-tac">
+                                <button class="nut-thao-tac nut-sua" onclick="editPost(this)"><i class="fa-solid fa-pen"></i></button>
+                                <button class="nut-thao-tac nut-xoa" onclick="confirmDelete(this)"><i class="fa-solid fa-trash"></i></button>
+                                <button class="nut-thao-tac" onclick="viewPost(this)"><i class="fa-solid fa-eye"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalAddPost">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeModal('modalAddPost')">&times;</button>
+            <h2>Thêm bài viết mới</h2>
+            <input type="text" id="addTitle" class="input-truong" placeholder="Tiêu đề bài viết">
+            <textarea id="addContent" class="input-truong" rows="4" placeholder="Nội dung bài viết"></textarea>
+            <input type="text" id="addAuthor" class="input-truong" placeholder="Người viết">
+            <input type="date" id="addDate" class="input-truong">
+            <button class="nut-bam" onclick="submitAddPost()">Thêm bài viết</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalEditPost">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeModal('modalEditPost')">&times;</button>
+            <h2>Sửa bài viết</h2>
+            <input type="text" id="editTitle" class="input-truong">
+            <textarea id="editContent" class="input-truong" rows="4"></textarea>
+            <input type="text" id="editAuthor" class="input-truong">
+            <input type="date" id="editDate" class="input-truong">
+            <button class="nut-bam" onclick="submitEditPost()">Cập nhật</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalViewPost">
+        <div class="modal-noi-dung">
+            <button class="nut-dong-modal" onclick="closeModal('modalViewPost')">&times;</button>
+            <h2 id="viewTitle"></h2>
+            <p><strong>Ngày đăng:</strong> <span id="viewDate"></span></p>
+            <p><strong>Người viết:</strong> <span id="viewAuthor"></span></p>
+            <p><strong>Nội dung:</strong></p>
+            <p id="viewContent"></p>
+        </div>
+    </div>
+
+    <div class="modal" id="modalConfirmDelete">
+        <div class="modal-noi-dung modal-confirm">
+            <button class="nut-dong-modal" onclick="closeModal('modalConfirmDelete')">&times;</button>
+            <h2>Xác nhận xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa bài viết này không?</p>
+            <div class="khung-nut-confirm">
+                <button class="nut-bam nut-xoa-confirm" onclick="deletePost()">Xóa</button>
+                <button class="nut-bam nut-huy-confirm" onclick="closeModal('modalConfirmDelete')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastNotification" class="thong-bao-nho">
+        <span id="toastMessage"></span>
+    </div>
+
+<script>
+const API_URL = "https://682ed083746f8ca4a47e6bb5.mockapi.io/user"; // 🔁 Thay bằng MockAPI thật
+let currentPostId = null;
+
+// === GIAO DIỆN ===
+function toggleDropdown() {
+    const userDropdown = document.getElementById("userDropdown");
+    if (userDropdown) {
+        userDropdown.classList.toggle('hien-thi');
+        if (userDropdown.classList.contains('hien-thi')) {
+            document.querySelectorAll('.menu-con.hien-thi').forEach(sub => {
+                sub.classList.remove('hien-thi');
+                sub.style.maxHeight = '0';
+                sub.closest('.co-menu-con')?.classList.remove('active');
+            });
+        }
+    }
+}
+function toggleSubmenu(menuId) {
+    const submenu = document.getElementById(menuId);
+    if (!submenu) return;
+    const parentLi = submenu.closest('.co-menu-con');
+
+    document.querySelectorAll('.menu-con').forEach(sm => {
+        if (sm.id !== menuId) {
+            sm.classList.remove('hien-thi');
+            sm.style.maxHeight = '0';
+            sm.closest('.co-menu-con')?.classList.remove('active');
+        }
+    });
+
+    if (submenu.classList.contains('hien-thi')) {
+        submenu.classList.remove('hien-thi');
+        submenu.style.maxHeight = '0';
+        parentLi?.classList.remove('active');
+    } else {
+        submenu.classList.add('hien-thi');
+        submenu.style.maxHeight = submenu.scrollHeight + "px";
+        parentLi?.classList.add('active');
+    }
+
+    const userDropdown = document.getElementById("userDropdown");
+    if (userDropdown?.classList.contains('hien-thi')) {
+        userDropdown.classList.remove('hien-thi');
+    }
+}
+function logout() {
+    alert("Đăng xuất thành công!");
+    window.location.href = "dangnhap.html";
+}
+document.addEventListener('click', function(event) {
+    const userArea = document.querySelector('.khu-vuc-ngu-dung');
+    const userDropdown = document.getElementById('userDropdown');
+    const sidebar = document.querySelector('.thanh-ben');
+
+    if (userArea && userDropdown && !userArea.contains(event.target) && userDropdown.classList.contains('hien-thi')) {
+        userDropdown.classList.remove('hien-thi');
+    }
+
+    let clickInSubmenu = false;
+    document.querySelectorAll('.co-menu-con span').forEach(span => {
+        if (span.contains(event.target)) clickInSubmenu = true;
+    });
+
+    if (sidebar && !sidebar.contains(event.target) && !clickInSubmenu) {
+        document.querySelectorAll('.menu-con.hien-thi').forEach(sub => {
+            sub.classList.remove('hien-thi');
+            sub.style.maxHeight = '0';
+            sub.closest('.co-menu-con')?.classList.remove('active');
+        });
+    }
+});
+
+// === TOAST + MODAL ===
+function openModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('hien-thi'), 10);
+    }
+}
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('hien-thi');
+        modal.addEventListener('transitionend', function handler() {
+            if (!modal.classList.contains('hien-thi')) {
+                modal.style.display = 'none';
+            }
+            modal.removeEventListener('transitionend', handler);
+        });
+    }
+}
+function showToast(message, type = 'thanh-cong', duration = 3000) {
+    const toast = document.getElementById('toastNotification');
+    const msg = document.getElementById('toastMessage');
+    if (toast && msg) {
+        msg.textContent = message;
+        toast.className = 'thong-bao-nho hien-thi ' + type;
+        setTimeout(() => toast.classList.remove('hien-thi', 'thanh-cong', 'that-bai'), duration);
+    }
+}
+
+// === MOCKAPI BÀI VIẾT ===
+async function loadPosts() {
+    const res = await fetch(API_URL);
+    const posts = await res.json();
+    const tbody = document.querySelector("#postTable tbody");
+    tbody.innerHTML = "";
+
+    posts.forEach(post => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td data-label="Tiêu đề">${post.title}</td>
+            <td data-label="Ngày đăng">${post.date}</td>
+            <td data-label="Người viết">${post.author}</td>
+            <td class="cot-thao-tac">
+                <button class="nut-thao-tac nut-sua" onclick="editPost('${post.id}')"><i class="fa-solid fa-pen"></i></button>
+                <button class="nut-thao-tac nut-xoa" onclick="confirmDelete('${post.id}')"><i class="fa-solid fa-trash"></i></button>
+                <button class="nut-thao-tac" onclick="viewPost('${post.id}')"><i class="fa-solid fa-eye"></i></button>
+            </td>`;
+        tbody.appendChild(row);
+    });
+}
+async function submitAddPost() {
+    const title = document.getElementById('addTitle')?.value.trim();
+    const content = document.getElementById('addContent')?.value.trim();
+    const author = document.getElementById('addAuthor')?.value.trim();
+    const date = document.getElementById('addDate')?.value;
+
+    if (!title || !content || !author || !date) {
+        showToast("Vui lòng điền đầy đủ thông tin!", "that-bai");
+        return;
+    }
+
+    await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content, author, date })
+    });
+
+    closeModal('modalAddPost');
+    showToast("Thêm bài viết thành công!");
+    loadPosts();
+}
+async function editPost(id) {
+    currentPostId = id;
+    const res = await fetch(`${API_URL}/${id}`);
+    const post = await res.json();
+
+    document.getElementById("editTitle").value = post.title;
+    document.getElementById("editContent").value = post.content;
+    document.getElementById("editAuthor").value = post.author;
+    document.getElementById("editDate").value = post.date;
+
+    openModal("modalEditPost");
+}
+async function submitEditPost() {
+    const title = document.getElementById("editTitle")?.value.trim();
+    const content = document.getElementById("editContent")?.value.trim();
+    const author = document.getElementById("editAuthor")?.value.trim();
+    const date = document.getElementById("editDate")?.value;
+
+    if (!title || !content || !author || !date) {
+        showToast("Vui lòng điền đầy đủ thông tin!", "that-bai");
+        return;
+    }
+
+    await fetch(`${API_URL}/${currentPostId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content, author, date })
+    });
+
+    closeModal("modalEditPost");
+    showToast("Cập nhật bài viết thành công!");
+    loadPosts();
+}
+async function viewPost(id) {
+    const res = await fetch(`${API_URL}/${id}`);
+    const post = await res.json();
+
+    document.getElementById("viewTitle").textContent = post.title;
+    document.getElementById("viewDate").textContent = post.date;
+    document.getElementById("viewAuthor").textContent = post.author;
+    document.getElementById("viewContent").textContent = post.content;
+
+    openModal("modalViewPost");
+}
+function confirmDelete(id) {
+    currentPostId = id;
+    openModal("modalConfirmDelete");
+}
+async function deletePost() {
+    await fetch(`${API_URL}/${currentPostId}`, { method: "DELETE" });
+    closeModal("modalConfirmDelete");
+    showToast("Đã xóa bài viết!");
+    loadPosts();
+}
+async function searchPosts() {
+    const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+    const res = await fetch(API_URL);
+    const posts = await res.json();
+    const filtered = posts.filter(p => p.title.toLowerCase().includes(keyword));
+
+    const tbody = document.querySelector("#postTable tbody");
+    tbody.innerHTML = "";
+
+    filtered.forEach(post => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td data-label="Tiêu đề">${post.title}</td>
+            <td data-label="Ngày đăng">${post.date}</td>
+            <td data-label="Người viết">${post.author}</td>
+            <td class="cot-thao-tac">
+                <button class="nut-thao-tac nut-sua" onclick="editPost('${post.id}')"><i class="fa-solid fa-pen"></i></button>
+                <button class="nut-thao-tac nut-xoa" onclick="confirmDelete('${post.id}')"><i class="fa-solid fa-trash"></i></button>
+                <button class="nut-thao-tac" onclick="viewPost('${post.id}')"><i class="fa-solid fa-eye"></i></button>
+            </td>`;
+        tbody.appendChild(row);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", loadPosts);
+</script>
+
+</body>
+</html>
